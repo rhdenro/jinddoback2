@@ -6,3 +6,10 @@ print(" 콘센트 사용 가능 유무 (1:가능 , 2: 불가능)")
 con = input()
 print(" pc 사용 가능 유무 (1:가능 , 2: 불가능)")
 com = input()
+
+flag=df['사용여부'] == 1
+df=df[flag]
+if (com=='1') :
+    flag = df['pc유무'] == 1
+    df=df[flag]
+
