@@ -12,4 +12,8 @@ df=df[flag]
 if (com=='1') :
     flag = df['pc유무'] == 1
     df=df[flag]
-
+if (con=='1') :
+    flag = df['콘센트유무'] == 1
+    df = df[flag]
+df['점수'] = 0
+print(df)
