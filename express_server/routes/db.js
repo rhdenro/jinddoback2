@@ -15,6 +15,7 @@ router.get('/users/userinfo', function (req, res, next) {
 
 /* seats state change */
 router.post('/seats/change', function (req, res, next) {
+    var seatinfo="";
     var connection = mysql.createConnection({
         host: process.env.MYSQL_HOST,
         user: process.env.MYSQL_USER,
@@ -26,9 +27,8 @@ router.post('/seats/change', function (req, res, next) {
     connection.query(sql,[req.body.seat_code], function(err, result, fields){
         if(err) throw(err)
         console.log('update successful');
+        res.json(result);
     })
-    connection.end();
-    res.json('successful');
 });
 
 /* seats info get */
@@ -43,8 +43,8 @@ router.get('/seats/get', function (req, res, next) {
     connection.connect();
     connection.query('SELECT * FROM seats WHERE seat_code="1JA1"', function(err, result, fields){
         if(err) throw err;
-        console.log(result);
         console.log('load successful');
+        res.json(result);
     })
     connection.end();
 });
