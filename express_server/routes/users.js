@@ -2,9 +2,7 @@ var express = require('express');
 var router = express.Router();
 var dbRouter = require('./db.js');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.use('/register', dbRouter);
+router.use('/userinfo', dbRouter);
 
 module.exports = router;
