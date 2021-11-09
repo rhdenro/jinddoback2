@@ -45,4 +45,12 @@ elif(level_2_flag == 2):
     tmp_test = test_df[flag]
     if edge == '1':
         df = df[df['가장자리'] == 1]
+    for i in tmp_test['좌석 코드']:
+        flag = df['좌석 번호'] == i
+        if df[flag].empty:
+            continue
+        result.append(df[flag].iloc[0])
+        result[-1]['점수'] = 1
+        idx_df = df[flag].index
+        df = df.drop(idx_df)
 print(df)
