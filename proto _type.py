@@ -27,8 +27,15 @@ if level_2_flag == 1:
     tmp_test = test_df[flag]
     for i in tmp_test['좌석 코드']:
         flag = df['좌석 번호'] == i
-        result.append(df[flag])
+        if df[flag].empty :continue
+        result.append(df[flag].iloc[0])
         result[-1]['점수'] = 1
-        idx_df=df[flag].index
+        idx_df = df[flag].index
         df = df.drop(idx_df)
+    print(result)
+    while(len(result) <= 15):
+        if df.empty: break
+        result.append(df.iloc[0])
+        df = df.drop(df.index[0])
+
 print(result)
