@@ -3,8 +3,13 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  -if(session.isLogined){
-    p
+  if session.isLogined
+    p.page
       h3 Hello! #{session.name}
       h3 학번 = #{session.userid}
-  -}
+      a(href="/logout") 로그아웃
+  else
+    script
+     | alert('로그인이 필요합니다');
+     | location.href="/login";
+
