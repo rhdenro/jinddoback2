@@ -34,6 +34,36 @@ router.post('/register', function (req, res, next) {
  })
 });
 
+/* login */
+router.post('/login', function(req,resp,next){
+    var sql = 'SELECT * FROM users WHERE student_no=?';
+    var params = [req.body.userid];
+    pool.query(sql,params, function(err,result,fields){
+        if(err) resp.send('<script> alert("로그인 에러"); location.href="/login"</script>');
+        else{
+            if(result.length > 0){
+                bcrypt.compare(req.body.userpassword, result[0].password, (err,res) => {
+                    if(err) throw(err);
+                    else if(res){
+                        req.session.isLogined = true;
+                        req.session.userid = result[0].student_no;
+                        req.session.name = result[0].name;
+                        req.session.save(function(){
+                            resp.redirect('/')
+                        })
+                    }
+                    else{
+                        resp.send('<script> alert("비밀번호가 일치하지 않습니다."); location.href="/login"</script>')
+                    }
+                })
+            }
+            else{
+                resp.send('<script> alert("가입되지 않은 학번입니다."); location.href="/login"</script>');
+            }
+        }
+    })
+});
+
 /* userinfo get */
 router.get('/users/userinfo', function (req, res, next) {
 
