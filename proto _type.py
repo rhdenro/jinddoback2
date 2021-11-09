@@ -53,4 +53,8 @@ elif(level_2_flag == 2):
         result[-1]['점수'] = 1
         idx_df = df[flag].index
         df = df.drop(idx_df)
-print(df)
+    while (len(result) <= 15):
+        if df.empty: break
+        result.append(df.iloc[0])
+        df = df.drop(df.index[0])
+print(result)
