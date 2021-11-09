@@ -2,6 +2,15 @@ doctype html
 html
   head
     title= title
+    h1 #{title} Test Page
     link(rel='stylesheet', href='/stylesheets/style.css')
+    a(href="/register") Register
+    br
+    a(href="/login") Login
+      br
+    a(href="/My_info") My_info
+      br
+    a(href="/Seat_info") Seat_info
+      br
   body
     block content
