@@ -3,15 +3,27 @@ result = []
 df = pd.read_excel(r'C:\Users\user\Desktop\data.xlsx')
 test_df = pd.read_excel(r'C:\Users\user\Desktop\test.xlsx')
 backup_df = df
-print("우대인원 사용 가능 (1: 사용, 2. 미사용")
-fre = input()
-if (fre==0):
+flag = df['사용여부'] == 1
+df = df[flag]
+print(df)
+print("우대인원 사용 가능 (1: 사용, 2. 미사용)")
+fre = int(input())
+if (fre == 1):
     print("좌석 분류: pc석(2인), 일반석(3인)")
-    print("1: pc, 2: 일반")
-    p_num = input()
+    print("2: pc, 3: 일반")
+    p_num = int(input())
     flag = df['우대인원'] == p_num
     df = df[flag]
     print(df)
+    if p_num==2:
+        count=df.shape[0]
+        for i in range(count-1):
+            if int(df['좌석 번호'].iloc[i][3])%2==1:
+                if int(df['좌석 번호'].iloc[i+1][3])%2==0:
+                    temp=pd.concat([df.iloc[i],df.iloc[i+1]], axis=1)
+                    result.append(temp.to_json)
+                    i+=1
+
 else:
     print(" 콘센트 사용 가능 유무 (1:가능 , 2: 불가능)")
     con = input()
@@ -20,8 +32,7 @@ else:
     print(" 가장자리 여부 (1:YES , 2: no matter)")
     edge = input()
     level_2_flag = 0
-    flag = df['사용여부'] == 1
-    df = df[flag]
+
     if (com == '1'):
         level_2_flag = 1
         flag = df['pc유무'] == 1
