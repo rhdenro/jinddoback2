@@ -81,7 +81,7 @@ router.post('/seats/change', function (req, res, next) {
 
 /* seats info get */
 router.get('/seats/get', function (req, res, next) {
-    pool.query('SELECT * FROM seats WHERE seat_code="1JA1"', function(err, result, fields){
+    pool.query('SELECT * FROM seats', function(err, result, fields){
         if(err) throw err;
         console.log('load successful');
         res.json(result);

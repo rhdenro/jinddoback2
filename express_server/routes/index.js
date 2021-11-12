@@ -21,6 +21,11 @@ router.get('/recommendation', function(req,res,next){
   res.render('recommendation', { title: 'Library seat Recommendation System', subtitle: 'recommendation', session: req.session})
 });
 
+/* seat page */
+router.get('/seats', function(req,res,next){
+  res.render('seats', { title: 'Library seat Recommendation System', subtitle: 'seat status', session: req.session })
+});
+
 /* Logout function */
 router.get('/logout', function(req,res,next){
   delete req.session.userid;

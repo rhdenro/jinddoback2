@@ -4,9 +4,14 @@ var path = require('path');
 var dotenv = require('dotenv');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+//session Defining
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+//CORS Config
+const cors = require('cors');
 var app = express();
+
+//dotenv(민감파일) 환경변수 설정
 dotenv.config();
 
 //session Database Option Define
@@ -27,6 +32,9 @@ app.use(session({
       store: sessionStore
     })
 );
+
+//CORS Error Resolving
+app.use(cors());
 
 //router Defining
 var indexRouter = require('./routes/index');
