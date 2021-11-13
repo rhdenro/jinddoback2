@@ -24,7 +24,7 @@ if (fre == 1):
                     result.append(temp.to_json)
                     i+=1
     elif p_num==3:
-        start=[192,195,198,201,204,207,210,213,216,219,222,225,225,228,231,234]
+        start=[192, 195, 198, 201, 204, 207, 210, 213, 216, 219, 222, 225, 225, 228, 231, 234]
         i=0
         count = df.shape[0]
         while i<= (count - 3):
@@ -38,13 +38,6 @@ if (fre == 1):
             else:
                 i=i+1
         print(result)
-
-
-
-
-
-
-
 else:
     print(" 콘센트 사용 가능 유무 (1:가능 , 2: 불가능)")
     con = input()
