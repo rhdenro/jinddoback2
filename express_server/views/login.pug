@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h2 #{subtitle}
+    form(action="db/login", method="post")
+        p
+            h4 학번
+            input(type="text", name="userid", placeholder="학번", required)
+        p
+            h4 PASSWORD
+            input(type="password", name="userpassword", placeholder="PASSWORD", required)
+        button(type="submit") 로그인

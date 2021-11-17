@@ -1,0 +1,6 @@
+POST localhost:8081/db/seats/change
+Content-Type: application/json
+
+{
+  "seat_code": "1JA1"
+}

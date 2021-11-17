@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    if session.isLogined
+        p
+            h4 좌석을 사용할 인원 수
+            input(type="text", name="people", required)
+        p
+            strong 유의사항
+            br
+            br
+            small 추천 가능 좌석이 사용하실 인원 수보다 적은 경우 우대좌석을 배제하고 추천될 수 있습니다.
+            br
+            br
+            small 추천 개수는 일반적으로 10개이나, 좌석이 더 적을 경우 이보다 적은 개수가 추천될 수 있습니다.
+    else
+        script
+            | alert('로그인이 필요합니다');
+            | location.href="/login";
