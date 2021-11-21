@@ -3,7 +3,12 @@ from django.http import HttpResponse, JsonResponse
 
 # Create your views here.
 def recommend(request):
-    import pandas as pd
+
+
+
+
+
+    """import pandas as pd
     result = []
     df = pd.read_excel(r'C:\Users\user\Desktop\data.xlsx')
     test_df = pd.read_excel(r'C:\Users\user\Desktop\test.xlsx')
@@ -98,4 +103,5 @@ def recommend(request):
                 if df.empty: break
                 result.append(df.iloc[0])
                 df = df.drop(df.index[0])
-    return JsonResponse(result)
+    return JsonResponse(result)"""
+
