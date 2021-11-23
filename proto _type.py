@@ -25,21 +25,15 @@ def recommend():
                         result.append(temp.to_json)
                         i += 1
         elif p_num == 3:
-            start = [192, 195, 198, 201, 204, 207, 210, 213, 216, 219, 222, 225, 225, 228, 231, 234]
-            i = 0
+            start = ['2SC1', '2SC4', '2SC7', '2SC10', '2SC13', '2SC16', '2SC19', '2SD1', '2SD4', '2SD7', '2SD10',
+                     '2SD13','2SD16','2SD19']
             count = df.shape[0]
-            while i <= (count - 3):
-                print(df.index[i])
-                if df.index[i] in start:
-                    if df.index[i] - df.index[i + 1] == -1 and df.index[i + 1] - df.index[i + 2] == -1:
-                        temp = pd.concat([df.iloc[i], df.iloc[i + 1], df.iloc[i + 2]], axis=1)
-                        i = i + 3
-                        result.append(temp.to_json)
-                    else:
-                        i = i + 1
-                else:
-                    i = i + 1
-            print(result)
+            for i in range(count - 1):
+                if (df['좌석 번호'].iloc[i]) in start:
+                    flag1=df['좌석 번호']==df['좌석 번호'].iloc[i][0:3]+str(int(df['좌석 번호'].iloc[i][3:])+1)
+                    flag2 = df['좌석 번호'] == df['좌석 번호'].iloc[i][0:3] + str(int(df['좌석 번호'].iloc[i][3:]) + 2)
+                    if not df[flag1].empty and not df[flag2].empty:
+                        result.append([df['좌석 번호'].iloc[i], df[flag1]['좌석 번호'].iloc[0], df[flag2]['좌석 번호'].iloc[0]])
     else:
         print(" 콘센트 사용 가능 유무 (1:가능 , 2: 불가능)")
         con = input()
@@ -94,4 +88,5 @@ def recommend():
                 if df.empty: break
                 result.append(df.iloc[0])
                 df = df.drop(df.index[0])
-        print(result)
+    print(result)
+recommend()
