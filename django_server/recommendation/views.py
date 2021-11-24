@@ -48,7 +48,15 @@ def recommend(request):
             if (com == 1):
                 flag = df['pc_available'] == 1
                 df = df[flag]
-               
+                flag = test_df['별점'] == 5
+                tmp_test = test_df[flag]
+                print(tmp_test)
+                for i in tmp_test['좌석 코드']:
+                    flag = df['seat_code'] == i
+                    if df[flag].empty: continue
+                    result.append(df[flag].iloc[0]['seat_code'])
+                    idx_df = df[flag].index
+                    df = df.drop(idx_df)
                 while (len(result) <= 15):
                     if df.empty: break
                     result.append(df.iloc[0]['seat_code'])
