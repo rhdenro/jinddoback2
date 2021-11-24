@@ -44,7 +44,8 @@ def recommend(request):
                         if not df[flag1].empty and not df[flag2].empty:
                             result.append([df['seat_code'].iloc[i], df[flag1]['seat_code'].iloc[0], df[flag2]['seat_code'].iloc[0]])
         else:
-            com = 1
+            com = 0
+            con=1
             if (com == 1):
                 flag = df['pc_available'] == 1
                 df = df[flag]
@@ -61,8 +62,14 @@ def recommend(request):
                     if df.empty: break
                     result.append(df.iloc[0]['seat_code'])
                     df = df.drop(df.index[0])
-
-
+            elif (con == '1'):
+                flag = df['concent_available'] == 1
+                df = df[flag]
+                df['점수'] = 0
+                while (len(result) <= 15):
+                    if df.empty: break
+                    result.append(df.iloc[0]['seat_code'])
+                    df = df.drop(df.index[0])
 
 
 
