@@ -46,6 +46,7 @@ def recommend(request):
         else:
             com = 0
             con = 1
+            edge=1
             if (com == 1):
                 flag = df['pc_available'] == 1
                 df = df[flag]
@@ -65,17 +66,23 @@ def recommend(request):
             elif (con == 1):
                 flag = df['concent_available'] == 1
                 df = df[flag]
-                print(df)
-                df['점수'] = 0
                 flag = test_df['별점'] == 5
                 tmp_test = test_df[flag]
-                print(tmp_test)
                 for i in tmp_test['좌석 코드']:
                     flag = df['seat_code'] == i
                     if not df[flag].empty :
                         result.append(df[flag].iloc[0]['seat_code'])
                         idx_df = df[flag].index
                         df = df.drop(idx_df)
+                if edge == 1:
+                    flag = df['edge_seat'] == 1
+                    count=df[flag].shape[0]
+                    print(df[flag])
+                    while count > 0 and len(result) <= 15:
+                        result.append(df[flag].iloc[0]['seat_code'])
+                        idx_df = df[flag].index[0]
+                        df = df.drop(idx_df)
+                        count-=1
                 while (len(result) <= 15):
                     if df.empty: break
                     result.append(df.iloc[0]['seat_code'])
