@@ -7,6 +7,8 @@ def recommend(request):
     try:
         import pandas as pd
         import json
+        test_df = pd.read_excel(r'C:\Users\user\Desktop\test.xlsx')
+
         cursor = connection.cursor()
 
         strSql = "SELECT *  FROM seats where seat_available = 1"
@@ -19,7 +21,7 @@ def recommend(request):
                                    'edge_seat'])
         result = []
         temp = []
-        fre = 1
+        fre = 0
         p_num = 3
         if (fre == 1):
             flag = df['preferences'] == p_num
@@ -41,8 +43,28 @@ def recommend(request):
                         flag2 = df['seat_code'] == df['seat_code'].iloc[i][0:3] + str(int(df['seat_code'].iloc[i][3:]) + 2)
                         if not df[flag1].empty and not df[flag2].empty:
                             result.append([df['seat_code'].iloc[i], df[flag1]['seat_code'].iloc[0], df[flag2]['seat_code'].iloc[0]])
+        else:
+            com = 1
+            if (com == 1):
+                flag = df['pc_available'] == 1
+                df = df[flag]
+               
+                while (len(result) <= 15):
+                    if df.empty: break
+                    result.append(df.iloc[0]['seat_code'])
+                    df = df.drop(df.index[0])
+
+
+
+
+
+
+
+
+
+
     except:
         connection.rollback()
-        print("Failed selecting in BookListView")
+        print("Failed selecting")
 
     return HttpResponse(result)
