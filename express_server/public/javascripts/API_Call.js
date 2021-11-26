@@ -43,4 +43,9 @@ module.exports = function(caller){
                 break;
         }
     }
+    var INSTANCE;
+    if(INSTANCE === undefined){
+        INSTANCE = new API_Call(caller);
+    }
+    return INSTANCE;
 };
