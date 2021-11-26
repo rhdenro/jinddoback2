@@ -45,7 +45,7 @@ def recommend(request):
                             result.append([df['seat_code'].iloc[i], df[flag1]['seat_code'].iloc[0], df[flag2]['seat_code'].iloc[0]])
         else:
             com = 0
-            con = 1
+            con = 0
             edge=1
             if (com == 1):
                 flag = df['pc_available'] == 1
@@ -89,16 +89,15 @@ def recommend(request):
             else:
                 flag = df['pc_available'] == 0
                 df = df[flag]
-                flag=test_df['별점']==5
-                temp_df=test_df[flag]
+                flag = test_df['별점']==5
+                temp_df = test_df[flag]
                 if not test_df[flag].empty:
                     for i in temp_df['좌석 코드']:
                         flag = df['seat_code'] == i
-                        
-
-
-
-
+                        if not df[flag].empty:
+                            result.append(df[flag].iloc[0]['seat_code'])
+                            idx_df = df[flag].index
+                            df = df.drop(idx_df)
     except:
         connection.rollback()
         print("Failed selecting")
