@@ -7,15 +7,28 @@ module.exports = function(caller){
             body: null
         };
         return{
-            recommendation_preference: function(user_id, isPreference, person, callback){
-                OPTIONS.url = process.env.Django_URL
+            recommendation_preference: function(user_id, isPreference, person, isEdge,callback){
+                OPTIONS.url = process.env.Django_URL;
                 OPTIONS.body = JSON.stringify({
                     "user_id": user_id,
                     "isPrefer": isPreference,
-                    "person": person
+                    "person": person,
+                    "isEdge": isEdge
                 });
                 request.post(OPTIONS, function(err, res, result){
-                    statusCodeErrorHandler(res.statusCode, callback, result);
+                    statusCodeHandler(res.statusCode, callback, result);
+                })
+            },
+            recommendation: function(user_id, isPc, isConcent, isEdge, callback){
+                OPTIONS.url = process.env.Django_URL;
+                OPTIONS.body = JSON.stringify({
+                    "user_id": user_id,
+                    "isPc": isPc,
+                    "isConcent": isConcent,
+                    "isEdge": isEdge
+                });
+                request.post(OPTIONS, function(err, res, result){
+                    statusCodeHandler(res.statusCode, callback, result);
                 })
             }
         }
