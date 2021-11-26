@@ -2,7 +2,6 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.db import connection
 
-
 def recommend(request):
     try:
         import pandas as pd
@@ -20,7 +19,6 @@ def recommend(request):
                           columns=['seat_available', 'pc_available', 'concent_available', 'seat_code', 'preferences',
                                    'edge_seat'])
         result = []
-        temp = []
         fre = 0
         p_num = 3
         if (fre == 1):
@@ -89,15 +87,22 @@ def recommend(request):
             else:
                 flag = df['pc_available'] == 0
                 df = df[flag]
-                flag = test_df['별점']==5
-                temp_df = test_df[flag]
+                print(df)
+                flag = test_df['별점'] == 5
                 if not test_df[flag].empty:
-                    for i in temp_df['좌석 코드']:
+                    for i in test_df[flag]['좌석 코드']:
                         flag = df['seat_code'] == i
                         if not df[flag].empty:
                             result.append(df[flag].iloc[0]['seat_code'])
                             idx_df = df[flag].index
                             df = df.drop(idx_df)
+                flag=test_df['별점'] >= 3
+                fre_ten=0
+                for i in test_df[flag]['밀집도']:
+                    fre_ten+=i
+                fre_ten = fre_ten/test_df[flag].shape[0]
+                
+
     except:
         connection.rollback()
         print("Failed selecting")
