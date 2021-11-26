@@ -77,16 +77,28 @@ def recommend(request):
                 if edge == 1:
                     flag = df['edge_seat'] == 1
                     count=df[flag].shape[0]
-                    print(df[flag])
-                    while count > 0 and len(result) <= 15:
+                    while count > 0 and len(result) < 15:
                         result.append(df[flag].iloc[0]['seat_code'])
                         idx_df = df[flag].index[0]
                         df = df.drop(idx_df)
-                        count-=1
-                while (len(result) <= 15):
+                        count -= 1
+                while (len(result) < 15):
                     if df.empty: break
                     result.append(df.iloc[0]['seat_code'])
                     df = df.drop(df.index[0])
+            else:
+                flag = df['pc_available'] == 0
+                df = df[flag]
+                flag=test_df['별점']==5
+                temp_df=test_df[flag]
+                if not test_df[flag].empty:
+                    for i in temp_df['좌석 코드']:
+                        flag = df['seat_code'] == i
+                        
+
+
+
+
     except:
         connection.rollback()
         print("Failed selecting")
