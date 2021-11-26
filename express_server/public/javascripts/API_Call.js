@@ -29,8 +29,18 @@ module.exports = function(caller){
                 });
                 request.post(OPTIONS, function(err, res, result){
                     statusCodeHandler(res.statusCode, callback, result);
-                })
+                });
             }
+        };
+    }
+    function statusCodeHandler(statusCode, callback, result){
+        switch(statusCode){
+            case 200:
+                callback(null, JSON.parse(result));
+                break;
+            default:
+                callback("error", JSON.parse(result));
+                break;
         }
     }
-}
+};
