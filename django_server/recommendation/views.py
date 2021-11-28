@@ -103,6 +103,15 @@ def recommend(request):
                 for i in test_df[flag]['밀집도']:
                     fre_ten += i
                 fre_ten = fre_ten / test_df[flag].shape[0]
+                if fre_ten < 50:
+                    fdf = fretend(df)
+                    for i in df['seat_code']:
+                        flag = df['seat_code'] == i
+                        test_key = i[0:3]
+                        if (fdf[test_key] < fre_ten * 1.1) and (fdf[test_key] > fre_ten * 0.9):
+                            if not df[flag].empty:
+                                df.iloc[df[flag].index - 1, 6] += 4
+                                print(df.iloc[df[flag].index - 1])
 
 
     except Exception as ex:
