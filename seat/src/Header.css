@@ -1,26 +1,47 @@
-
-
-.logo {
-    margin-top: 80px;
-    height: 10rem;
+.headername {
+    position: absolute;
+    height: 1rem;
     width: 100vw;
-    line-height: 3.5rem;
+    line-height: 5rem;
     color: #F15F5F;
     font-size: 5rem;
     font-weight: bold;
     text-align: center;
+    justify-content: center;
+    top: 5%;
   }
+.headerlogo {
+    margin-top: 50px;
+    object-fit: cover;
+    margin-left: 100px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+ }
+.headernav {
+  display: flex;
+  flex-direction: column;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+.headernav{
+  display: flex;
+  justify-content: space-evenly;
+}
   .menu {
     background-color: #ffffff;
-    height: 3.5rem;
+    height: 5rem;
+    margin-top: 100px;
   }
   .menu-item {
+    margin-top: 100px;
     display: inline-block;
     color: rgb(59, 59, 59, 59, 59);
     font-size: 1.3rem;
     font-style: bold;
     line-height: 5rem;
-    width: 30.0000%;
+    width: 33.3333%;
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s;
