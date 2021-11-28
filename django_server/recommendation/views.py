@@ -114,3 +114,6 @@ def fretend(df):
     count = {"1SA": 0, "1SB": 0, "1JA": 0, "1JB": 0, "2JA": 0, "2JB": 0, "2SA": 0, "2SB": 0, "2SC": 0,
              "2SD": 0, "3NA": 0, "3JA": 0, "3JB": 0,
              "4SA": 0, "4SB": 0, "4SC": 0, "4JA": 0, "4JB": 0}
+    for i in df['seat_code']:
+        tmp = i[0:3]
+        count[tmp] += 1
