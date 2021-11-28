@@ -119,8 +119,12 @@ def recommend(request):
                             if not df[flag].empty:
                                 df.iloc[df[flag].index - 1, 6] += 2
                 if edge == 1:
-                    flag = df['edge'] == 1
-                    df.iloc[df[flag].index -1, 6] +=3
+                    flag = df['edge_seat'] == 1
+                    k= df[flag].shape[0] -1
+                    for i in range(k):
+                        idx=df[flag].index[i]
+                        df.loc[idx, 'point'] +=3
+
 
 
     except Exception as ex:
@@ -142,5 +146,4 @@ def fretend(df):
         count[tmp] += 1
     for i in count:
         temp[i] = (100 - round(count[i] / temp[i] * 100))
-    print(temp)
     return temp
