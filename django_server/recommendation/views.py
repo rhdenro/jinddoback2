@@ -99,6 +99,11 @@ def recommend(request):
                             idx_df = df[flag].index
                             df = df.drop(idx_df)
                 flag = test_df['별점'] >= 3
+                fre_ten = 0
+                for i in test_df[flag]['밀집도']:
+                    fre_ten += i
+                fre_ten = fre_ten / test_df[flag].shape[0]
+
 
     except Exception as ex:
         connection.rollback()
