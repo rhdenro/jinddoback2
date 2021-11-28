@@ -117,8 +117,11 @@ def recommend(request):
                             if not df[flag].empty:
                                 df.iloc[df[flag].index - 1, 6] += 3
                                 print(df.iloc[df[flag].index - 1])
-                   
-
+                        elif (fdf[test_key] < fre_ten * 1.07) and (fdf[test_key] > fre_ten * 0.93):
+                            if not df[flag].empty:
+                                df.iloc[df[flag].index - 1, 6] += 2
+                                print(df.iloc[df[flag].index - 1])
+                                
 
     except Exception as ex:
         connection.rollback()
