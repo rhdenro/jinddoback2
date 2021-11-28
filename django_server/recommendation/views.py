@@ -108,10 +108,16 @@ def recommend(request):
                     for i in df['seat_code']:
                         flag = df['seat_code'] == i
                         test_key = i[0:3]
-                        if (fdf[test_key] < fre_ten * 1.1) and (fdf[test_key] > fre_ten * 0.9):
+                        if (fdf[test_key] < fre_ten * 1.03) and (fdf[test_key] > fre_ten * 0.97):
                             if not df[flag].empty:
                                 df.iloc[df[flag].index - 1, 6] += 4
                                 print(df.iloc[df[flag].index - 1])
+
+                        elif (fdf[test_key] < fre_ten * 1.05) and (fdf[test_key] > fre_ten * 0.95):
+                            if not df[flag].empty:
+                                df.iloc[df[flag].index - 1, 6] += 3
+                                print(df.iloc[df[flag].index - 1])
+                   
 
 
     except Exception as ex:
