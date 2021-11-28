@@ -120,17 +120,26 @@ def recommend(request):
                                 df.iloc[df[flag].index - 1, 6] += 2
                 if edge == 1:
                     flag = df['edge_seat'] == 1
-                    k= df[flag].shape[0] -1
+                    k= df[flag].shape[0]-1
                     for i in range(k):
                         idx=df[flag].index[i]
                         df.loc[idx, 'point'] +=3
 
-
+                flag=test_df['별점'] >= 4
+                floor=[]
+                for i in test_df[flag]['좌석 코드']:
+                    floor.append(i[0])
+                floor=set(floor)
+                for i in range(df.shape[0]-1):
+                    floor_int=df.iloc[i,3]
+                    if str(floor_int[0]) in floor:
+                        df.iloc[i,6] += 1
 
     except Exception as ex:
         connection.rollback()
         print("Error: ",ex)
         print("Failed selecting")
+
     print(df)
     return HttpResponse(result)
 
