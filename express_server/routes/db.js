@@ -4,7 +4,8 @@ var sequelize = require('sequelize');
 var mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const saltRounds = 10; //Hashing Rounds
-
+const request = require('request');
+var API_Call = require('../public/javascripts/API_Call');
 //Pool 생성(For MySQL)
 var pool = mysql.createPool({
     host: process.env.MySQL_URL,
@@ -64,11 +65,6 @@ router.post('/login', function(req,resp,next){
     })
 });
 
-/* userinfo get */
-router.get('/users/userinfo', function (req, res, next) {
-
-});
-
 /* seats state change */
 router.post('/seats/change', function (req, res, next) {
     var sql = 'UPDATE seats SET seat_available=0 WHERE seat_code=?'
@@ -81,11 +77,33 @@ router.post('/seats/change', function (req, res, next) {
 
 /* seats info get */
 router.get('/seats/get', function (req, res, next) {
-    pool.query('SELECT * FROM seats', function(err, result, fields){
+    pool.query('SELECT * FROM seats ORDER BY seat_code ', function(err, result, fields){
         if(err) throw err;
         console.log('load successful');
         res.json(result);
     })
+});
+
+//recommendation Server 통신
+router.post('/recommendation', function(req,res){
+    if(req.body.isPreference){
+        API_Call.recommendation_preference(req.session.userid, req.body.isPreference, req.body.person, req.body.isEdge, function(err, result){
+            if(!err){
+                res.json(result);
+            } else{
+                res.json(err);
+            }
+        });
+    }
+    else{
+        API_Call.recommendation(req.sesion.userid, req.body.isPc, req.body.isConcent, req.body.isEdge, function(err, result){
+            if(!err){
+                res.json(result);
+            } else{
+                res.json(err);
+            }
+        })
+    }
 });
 
 module.exports = router;
