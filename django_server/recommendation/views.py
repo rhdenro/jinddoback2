@@ -103,6 +103,7 @@ def recommend(request):
                 for i in test_df[flag]['밀집도']:
                     fre_ten += i
                 fre_ten = fre_ten / test_df[flag].shape[0]
+                fre_ten = 13.5
                 if fre_ten < 50:
                     fdf = fretend(df)
                     for i in df['seat_code']:
@@ -111,23 +112,22 @@ def recommend(request):
                         if (fdf[test_key] < fre_ten * 1.03) and (fdf[test_key] > fre_ten * 0.97):
                             if not df[flag].empty:
                                 df.iloc[df[flag].index - 1, 6] += 4
-                                print(df.iloc[df[flag].index - 1])
-
                         elif (fdf[test_key] < fre_ten * 1.05) and (fdf[test_key] > fre_ten * 0.95):
                             if not df[flag].empty:
                                 df.iloc[df[flag].index - 1, 6] += 3
-                                print(df.iloc[df[flag].index - 1])
                         elif (fdf[test_key] < fre_ten * 1.07) and (fdf[test_key] > fre_ten * 0.93):
                             if not df[flag].empty:
                                 df.iloc[df[flag].index - 1, 6] += 2
-                                print(df.iloc[df[flag].index - 1])
-                                
+                if edge == 1:
+                    flag = df['edge'] == 1
+                    df.iloc[df[flag].index -1, 6] +=3
+
 
     except Exception as ex:
         connection.rollback()
         print("Error: ",ex)
         print("Failed selecting")
-
+    print(df)
     return HttpResponse(result)
 
 def fretend(df):
@@ -142,4 +142,5 @@ def fretend(df):
         count[tmp] += 1
     for i in count:
         temp[i] = (100 - round(count[i] / temp[i] * 100))
+    print(temp)
     return temp
