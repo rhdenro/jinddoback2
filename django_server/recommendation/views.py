@@ -139,7 +139,13 @@ def recommend(request):
             count_df=test_df[flag]['사용횟수']
             J_point = 0
             S_point = 0
-           
+            for i in range(tmp_df.shape[0]-1):
+                tmp=tmp_df.iloc[i]
+                if tmp[1] == 'J':
+                    J_point+=(2 * count_df.iloc[i])
+                elif tmp[1] == 'S' or tmp[1] =='N':
+                    S_point += (2 * count_df.iloc[i])
+                    
 
 
 
