@@ -7,3 +7,13 @@
     font-weight: 50;
     src: url("./fonts/SB 어그로 B.ttf") format("truetype");
   }
+  
+button{
+    background: #F15F5F;
+    width: 250px;
+    height: 30px;
+    border-radius: 10px;
+    font-size: 22px;
+    color: #ffffff;
+    
+  }

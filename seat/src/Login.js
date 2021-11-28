@@ -4,6 +4,7 @@ import cbnulibrary from './images/cbnulibrary.jpeg';
 import dotenv from 'dotenv';
 import { useNavigate, Navigate } from "react-router-dom";
 import login1 from './auth.js';
+import './App.css';
 
 dotenv.config();
 function Login() {
@@ -69,17 +70,14 @@ function Login() {
             </div>
             <br />
             <div>
-                <button
-                 style={{
-                    background: "#F15F5F",
-                    width: "250px",
-                    height: "30px",
-                    borderRadius: "10px",
-                    fontSize: "22px",
-                    color: "#ffffff"
-                }}
-                href="/"
-                 onClick={onClickLogin}>Login</button>
+                <button href="/" onClick={onClickLogin}>Login</button>
+            </div>
+            <br/>
+            <div>
+                <button type="button" onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href="/Register";
+                }}>회원가입</button>
             </div>
         </div>
         
