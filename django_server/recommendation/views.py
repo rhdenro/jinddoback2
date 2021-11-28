@@ -103,7 +103,6 @@ def recommend(request):
                 for i in test_df[flag]['밀집도']:
                     fre_ten += i
                 fre_ten = fre_ten / test_df[flag].shape[0]
-                fre_ten = 13.5
                 if fre_ten < 50:
                     fdf = fretend(df)
                     for i in df['seat_code']:
@@ -111,19 +110,19 @@ def recommend(request):
                         test_key = i[0:3]
                         if (fdf[test_key] < fre_ten * 1.03) and (fdf[test_key] > fre_ten * 0.97):
                             if not df[flag].empty:
-                                df.iloc[df[flag].index - 1, 6] += 4
+                                df.iloc[df[flag].index - 1, 6] += 5
                         elif (fdf[test_key] < fre_ten * 1.05) and (fdf[test_key] > fre_ten * 0.95):
                             if not df[flag].empty:
-                                df.iloc[df[flag].index - 1, 6] += 3
+                                df.iloc[df[flag].index - 1, 6] += 4
                         elif (fdf[test_key] < fre_ten * 1.07) and (fdf[test_key] > fre_ten * 0.93):
                             if not df[flag].empty:
-                                df.iloc[df[flag].index - 1, 6] += 2
+                                df.iloc[df[flag].index - 1, 6] += 3
                 if edge == 1:
                     flag = df['edge_seat'] == 1
                     k= df[flag].shape[0]-1
                     for i in range(k):
                         idx=df[flag].index[i]
-                        df.loc[idx, 'point'] +=3
+                        df.loc[idx, 'point'] +=7
 
                 flag=test_df['별점'] >= 4
                 floor=[]
@@ -142,19 +141,23 @@ def recommend(request):
             for i in range(tmp_df.shape[0]-1):
                 tmp=tmp_df.iloc[i]
                 if tmp[1] == 'J':
-                    J_point+=(2 * count_df.iloc[i])
+                    J_point+=count_df.iloc[i]
                 elif tmp[1] == 'S' or tmp[1] =='N':
-                    S_point += (2 * count_df.iloc[i])
-                    
-
-
+                    S_point +=count_df.iloc[i]
+            for i in range(df.shape[0]-1):
+                tmp=df.iloc[i,3]
+                if tmp[1] == 'J':
+                    df.iloc[i,6] += J_point
+                elif tmp[1] == 'S' or tmp[1] == 'N':
+                    df.iloc[i, 6] += S_point
+            df=df.sort_values(by=['point'], axis=0, ascending=False)
 
     except Exception as ex:
         connection.rollback()
         print("Error: ",ex)
         print("Failed selecting")
 
-    print(df)
+    print(df[df['point']==12])
     return HttpResponse(result)
 
 def fretend(df):
