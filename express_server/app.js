@@ -34,7 +34,10 @@ app.use(session({
 );
 
 //CORS Error Resolving
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 
 //router Defining
 var indexRouter = require('./routes/index');
