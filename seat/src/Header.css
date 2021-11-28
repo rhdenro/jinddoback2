@@ -1,0 +1,35 @@
+
+
+.logo {
+    margin-top: 80px;
+    height: 10rem;
+    width: 100vw;
+    line-height: 3.5rem;
+    color: #F15F5F;
+    font-size: 5rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  .menu {
+    background-color: #ffffff;
+    height: 3.5rem;
+  }
+  .menu-item {
+    display: inline-block;
+    color: rgb(59, 59, 59, 59, 59);
+    font-size: 1.3rem;
+    font-style: bold;
+    line-height: 5rem;
+    width: 30.0000%;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+  }
+  .menu-item:hover {
+    background-color: #F15F5F;
+  }
+  .menu-item:active,
+.menu-item.active {
+  background-color: #9cd7ee;
+}

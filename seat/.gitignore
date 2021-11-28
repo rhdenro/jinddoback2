@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#의존성 push 제거
+yarn.lock 
+node_modules/
