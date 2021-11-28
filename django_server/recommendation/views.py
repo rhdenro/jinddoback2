@@ -117,3 +117,6 @@ def fretend(df):
     for i in df['seat_code']:
         tmp = i[0:3]
         count[tmp] += 1
+    for i in count:
+        temp[i] = (100 - round(count[i] / temp[i] * 100))
+    return temp
