@@ -134,6 +134,14 @@ def recommend(request):
                     floor_int=df.iloc[i,3]
                     if str(floor_int[0]) in floor:
                         df.iloc[i,6] += 1
+            flag = test_df['별점'] >= 3
+            tmp_df = test_df[flag]['좌석 코드']
+            count_df=test_df[flag]['사용횟수']
+            J_point = 0
+            S_point = 0
+           
+
+
 
     except Exception as ex:
         connection.rollback()
