@@ -141,9 +141,11 @@ def recommend(request):
             for i in range(tmp_df.shape[0]-1):
                 tmp=tmp_df.iloc[i]
                 if tmp[1] == 'J':
-                    J_point+=count_df.iloc[i]
-                elif tmp[1] == 'S' or tmp[1] =='N':
-                    S_point +=count_df.iloc[i]
+                    J_point+=(2*count_df.iloc[i])
+                elif tmp[1] == 'S':
+                    S_point +=(2*count_df.iloc[i])
+                elif tmp[1] =='N':
+                    S_point +=(1*count_df.iloc[i])
             for i in range(df.shape[0]-1):
                 tmp=df.iloc[i,3]
                 if tmp[1] == 'J':
@@ -151,13 +153,18 @@ def recommend(request):
                 elif tmp[1] == 'S' or tmp[1] == 'N':
                     df.iloc[i, 6] += S_point
             df=df.sort_values(by=['point'], axis=0, ascending=False)
+            repeat_int=0
+            while (len(result) < 15):
+                result.append(df.iloc[repeat_int,3])
+                repeat_int+=1
+
 
     except Exception as ex:
         connection.rollback()
         print("Error: ",ex)
         print("Failed selecting")
 
-    print(df[df['point']==12])
+    print(result)
     return HttpResponse(result)
 
 def fretend(df):
