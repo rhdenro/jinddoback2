@@ -48,6 +48,8 @@ def recommend(request):
             if (com == 1):
                 flag = df['pc_available'] == 1
                 df = df[flag]
+                flag= df['preferences']==0
+                df = df[flag]
                 flag = test_df['별점'] == 5
                 tmp_test = test_df[flag]
                 print(tmp_test)
@@ -85,9 +87,9 @@ def recommend(request):
                     result.append(df.iloc[0]['seat_code'])
                     df = df.drop(df.index[0])
             else:
+                df['point'] = 0
                 flag = df['pc_available'] == 0
                 df = df[flag]
-                print(df)
                 flag = test_df['별점'] == 5
                 if not test_df[flag].empty:
                     for i in test_df[flag]['좌석 코드']:
@@ -96,15 +98,19 @@ def recommend(request):
                             result.append(df[flag].iloc[0]['seat_code'])
                             idx_df = df[flag].index
                             df = df.drop(idx_df)
-                flag=test_df['별점'] >= 3
-                fre_ten=0
-                for i in test_df[flag]['밀집도']:
-                    fre_ten+=i
-                fre_ten = fre_ten/test_df[flag].shape[0]
-                
+                flag = test_df['별점'] >= 3
 
-    except:
+    except Exception as ex:
         connection.rollback()
+        print("Error: ",ex)
         print("Failed selecting")
 
     return HttpResponse(result)
+
+def fretend(df):
+    temp = {"1SA": 24, "1SB": 24, "1JA": 14, "1JB": 14, "2JA": 34, "2JB": 34, "2SA": 24, "2SB": 24,
+            "2SC": 21, "2SD": 21, "3NA": 80, "3JA": 7, "3JB": 18,
+            "4SA": 84, "4SB": 16, "4SC": 44, "4JA": 21, "4JB": 7}
+    count = {"1SA": 0, "1SB": 0, "1JA": 0, "1JB": 0, "2JA": 0, "2JB": 0, "2SA": 0, "2SB": 0, "2SC": 0,
+             "2SD": 0, "3NA": 0, "3JA": 0, "3JB": 0,
+             "4SA": 0, "4SB": 0, "4SC": 0, "4JA": 0, "4JB": 0}
