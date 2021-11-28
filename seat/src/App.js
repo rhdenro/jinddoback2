@@ -4,8 +4,7 @@ import Header from './Header.js';
 import "./App.css";
 import Login from "./Login.js";
 
-
-class App extends Component {
+/*class App extends Component {
   render() {
       return (
           <div>
@@ -14,16 +13,16 @@ class App extends Component {
           </div>
       );
   }
-}
+}*/
 
 
-/*function App(){
+function App(){
   return(
     <div className="App">
        <Login />
      
     </div>
   );
-}*/
+}
 
 export default App;

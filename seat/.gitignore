@@ -25,3 +25,6 @@ yarn-error.log*
 #의존성 push 제거
 yarn.lock 
 node_modules/
+
+#비밀파일 gitignore
+.env
