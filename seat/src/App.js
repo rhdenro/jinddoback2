@@ -2,7 +2,10 @@
 import React , { Component } from "react";
 import Header from './Header.js';
 import "./App.css";
+import Main from "./main.js"
 import Login from "./Login.js";
+import Home from "./Home.js";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 /*class App extends Component {
   render() {
@@ -15,12 +18,15 @@ import Login from "./Login.js";
   }
 }*/
 
-
 function App(){
   return(
-    <div className="App">
-       <Login />
-     
+    <div className = 'App'>
+      <Routes>
+        <Route exact path="/" element={<Main/>}/>
+        <Route path = "/home" element={<Home/>}/>
+        <Route path="/header" element={<Header/>} />
+        <Route path="/login" element={<Login />} />   
+      </Routes>   
     </div>
   );
 }

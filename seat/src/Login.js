@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import cbnulibrary from './images/cbnulibrary.jpeg';
 import dotenv from 'dotenv';
- 
+import { useNavigate, Navigate } from "react-router-dom";
+import login1 from './auth.js';
+
 dotenv.config();
 function Login() {
+    const navigate = useNavigate();
     const [inputId, setInputId] = useState('')
     const [inputPw, setInputPw] = useState('')
  
@@ -20,20 +23,15 @@ function Login() {
 	// login 버튼 클릭 이벤트
     const onClickLogin = () => {
         console.log('click login')
-        axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db/login',{
-            userid: inputId,
-            userpassword: inputPw,
-        },{
-            'Access-Contorl-Allow-Credentials': "true",
-            withCredentials: true
-        }).then(function (response){
-            sessionStorage.setItem('userId', response.data.userId);
-            sessionStorage.setItem('userName', response.data.userName);
-            sessionStorage.setItem('isLogined', response.data.isLoggedIn);
-        }).catch(function(error){
+        login1(inputId, inputPw, sessionStorage)
+        .then(result => {
+            setTimeout(()=>{
+                if(result == 1){
+                    document.location.href='/';
+                }
+            },80)
         })
     }
- 
 	// 페이지 렌더링 후 가장 처음 호출되는 함수
     useEffect(() => {
         axios.get('/user_inform/login')
@@ -80,6 +78,7 @@ function Login() {
                     fontSize: "22px",
                     color: "#ffffff"
                 }}
+                href="/"
                  onClick={onClickLogin}>Login</button>
             </div>
         </div>
