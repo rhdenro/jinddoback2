@@ -1,20 +1,25 @@
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.db import connection
+import json
 
 def recommend(request):
     try:
         import pandas as pd
         import json
+        sqldata = json.loads(request.body)
         test_df = pd.read_excel(r'C:\Users\user\Desktop\test.xlsx')
 
         cursor = connection.cursor()
 
-        strSql = "SELECT *  FROM seats where seat_available = 1"
+        strsql = "SELECT *  FROM seats where seat_available = 1"
         cursor.execute(strSql)
         seats = cursor.fetchall()
         connection.commit()
         connection.close()
+        pre_df = pd.DataFrame(sqlData['preferInfo'],
+                          columns=['reservation_id', 'reservation_user', 'seat_code', 'count', 'date',
+                                   'score','density'])
         df = pd.DataFrame(seats,
                           columns=['seat_available', 'pc_available', 'concent_available', 'seat_code', 'preferences',
                                    'edge_seat'])

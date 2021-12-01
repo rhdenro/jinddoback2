@@ -96,7 +96,6 @@ router.post('/recommendation', function(req,res,next){
     pool.query(sql, param, function(err, rows, fields){
         if(err) throw err;
         else{
-            console.log(rows);
             req.preferInfo = rows;
             next();
         }
@@ -118,7 +117,7 @@ router.post('/recommendation', function(req,res){
             if(!err){
                 res.json(result);
             } else{
-                res.json(err);
+                res.json(err);0
             }
         })
     }
