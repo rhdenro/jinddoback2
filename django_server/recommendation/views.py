@@ -6,7 +6,6 @@ import json
 def recommend(request):
     try:
         import pandas as pd
-        import json
         sqldata = json.loads(request.body)
         test_df = pd.read_excel(r'C:\Users\user\Desktop\test.xlsx')
 
@@ -201,3 +200,11 @@ def fretend(df):
     for i in count:
         temp[i] = (100 - round(count[i] / temp[i] * 100))
     return temp
+
+def reservation(request):
+    sqldata = json.loads(request.body)
+    seat_code = sqldata["seat_code"]
+    userid = sqldata["userid"]
+    count = sqldata["count"]
+    
+

@@ -90,6 +90,7 @@ router.get('/seats/get', function (req, res, next) {
 });
 
 //recommendation Server 통신
+//추천값 받아오기
 router.post('/recommendation', function(req,res,next){
     let sql = "SELECT * FROM preference_table WHERE reservation_user=?";
     let param = [req.body.userid];
@@ -117,7 +118,7 @@ router.post('/recommendation', function(req,res){
             if(!err){
                 res.json(result);
             } else{
-                res.json(err);0
+                res.json(err);
             }
         })
     }
