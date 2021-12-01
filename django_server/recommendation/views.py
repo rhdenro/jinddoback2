@@ -110,19 +110,19 @@ def recommend(request):
                         test_key = i[0:3]
                         if (fdf[test_key] < fre_ten * 1.03) and (fdf[test_key] > fre_ten * 0.97):
                             if not df[flag].empty:
-                                df.iloc[df[flag].index - 1, 6] += 5
+                                df.iloc[df[flag].index - 1, 6] += 6
                         elif (fdf[test_key] < fre_ten * 1.05) and (fdf[test_key] > fre_ten * 0.95):
                             if not df[flag].empty:
                                 df.iloc[df[flag].index - 1, 6] += 4
                         elif (fdf[test_key] < fre_ten * 1.07) and (fdf[test_key] > fre_ten * 0.93):
                             if not df[flag].empty:
-                                df.iloc[df[flag].index - 1, 6] += 3
+                                df.iloc[df[flag].index - 1, 6] += 2
                 if edge == 1:
                     flag = df['edge_seat'] == 1
                     k= df[flag].shape[0]-1
                     for i in range(k):
                         idx=df[flag].index[i]
-                        df.loc[idx, 'point'] +=7
+                        df.loc[idx, 'point'] +=6
 
                 flag=test_df['별점'] >= 4
                 floor=[]
@@ -150,8 +150,11 @@ def recommend(request):
                 tmp=df.iloc[i,3]
                 if tmp[1] == 'J':
                     df.iloc[i,6] += J_point
-                elif tmp[1] == 'S' or tmp[1] == 'N':
+                elif tmp[1] == 'S':
                     df.iloc[i, 6] += S_point
+                elif tmp[1] == 'N':
+                    if S_point<0:continue
+                    df.iloc[i, 6] += S_point-1
             df=df.sort_values(by=['point'], axis=0, ascending=False)
             repeat_int=0
             while (len(result) < 15):
