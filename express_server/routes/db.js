@@ -5,7 +5,7 @@ var mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const saltRounds = 10; //Hashing Rounds
 const request = require('request');
-var API_Call = require('../public/javascripts/API_Call');
+const API_Call= require('../public/javascripts/API_Call');
 //Pool 생성(For MySQL)
 var pool = mysql.createPool({
     host: process.env.MySQL_URL,
@@ -28,8 +28,13 @@ router.post('/register', function (req, res, next) {
      pool.query(sql,param, function(err,rows,fields){
          if(err){
              console.error(err);
+             res.json({
+                 success: 0
+             })
          } else{
-             res.send('<script> alert("Register Success"); location.href="/" </script>');
+             res.json({
+                 success: 1
+             });
          }
      });
  })
@@ -40,7 +45,7 @@ router.post('/login', function(req,resp,next){
     var sql = 'SELECT * FROM users WHERE student_no=?';
     var params = [req.body.userid];
     pool.query(sql,params, function(err,result,fields){
-        if(err) resp.send('<script> alert("로그인 에러"); location.href="/localhost/login"</script>');
+        if(err) resp.json({success: 3});
         else{
             if(result.length > 0){
                 bcrypt.compare(req.body.userpassword, result[0].password, (err,res) => {
@@ -85,9 +90,22 @@ router.get('/seats/get', function (req, res, next) {
 });
 
 //recommendation Server 통신
+router.post('/recommendation', function(req,res,next){
+    let sql = "SELECT * FROM preference_table WHERE reservation_user=?";
+    let param = [req.body.userid];
+    pool.query(sql, param, function(err, rows, fields){
+        if(err) throw err;
+        else{
+            console.log(rows);
+            req.preferInfo = rows;
+            next();
+        }
+    })
+});
+
 router.post('/recommendation', function(req,res){
     if(req.body.isPreference){
-        API_Call.recommendation_preference(req.session.userid, req.body.isPreference, req.body.person, req.body.isEdge, function(err, result){
+        API_Call().recommendation_preference(req.body.userid, req.body.isPreference, req.body.person, req.body.isEdge, req.preferInfo, function(err, result){
             if(!err){
                 res.json(result);
             } else{
@@ -96,7 +114,7 @@ router.post('/recommendation', function(req,res){
         });
     }
     else{
-        API_Call.recommendation(req.sesion.userid, req.body.isPc, req.body.isConcent, req.body.isEdge, function(err, result){
+        API_Call().recommendation(req.body.userid, req.body.isPc, req.body.isConcent, req.body.isEdge, req.preferInfo, function(err, result){
             if(!err){
                 res.json(result);
             } else{

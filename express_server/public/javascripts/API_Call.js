@@ -1,31 +1,32 @@
 const request = require('request');
-module.exports = function(caller){
-    function API_Call(){
+module.exports = function API_Call(){
         let OPTIONS = {
             headers: {'Content-Type': 'application/json'},
             url: null,
             body: null
         };
         return{
-            recommendation_preference: function(user_id, isPreference, person, isEdge, callback){
+            recommendation_preference: function(user_id, isPreference, person, isEdge, preferInfo, callback){
                 OPTIONS.url = process.env.Django_URL;
                 OPTIONS.body = JSON.stringify({
                     "user_id": user_id,
                     "isPrefer": isPreference,
                     "person": person,
-                    "isEdge": isEdge
+                    "isEdge": isEdge,
+                    "preferInfo": preferInfo
                 });
                 request.post(OPTIONS, function(err, res, result){
                     statusCodeHandler(res.statusCode, callback, result);
                 })
             },
-            recommendation: function(user_id, isPc, isConcent, isEdge, callback){
+            recommendation: function(user_id, isPc, isConcent, isEdge, preferInfo, callback){
                 OPTIONS.url = process.env.Django_URL;
                 OPTIONS.body = JSON.stringify({
                     "user_id": user_id,
                     "isPc": isPc,
                     "isConcent": isConcent,
-                    "isEdge": isEdge
+                    "isEdge": isEdge,
+                    "preferInfo": preferInfo
                 });
                 request.post(OPTIONS, function(err, res, result){
                     statusCodeHandler(res.statusCode, callback, result);
@@ -42,10 +43,4 @@ module.exports = function(caller){
                 callback("error", JSON.parse(result));
                 break;
         }
-    }
-    var INSTANCE;
-    if(INSTANCE === undefined){
-        INSTANCE = new API_Call(caller);
-    }
-    return INSTANCE;
-};
+    };
