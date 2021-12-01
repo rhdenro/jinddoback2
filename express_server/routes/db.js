@@ -113,6 +113,17 @@ router.post('/seats/reservation_con', function(req,res,next){
     });
 })
 
+/* 예약 취소 및 종료 */
+router.post('/seats/reservation_can', function(req,res){
+    pool.query('UPDATE reservation_log SET available=0 WHERE seat_code=? AND available=1', req.body.seat_code, function(err,rows,fields){
+        if(err){
+            res.json({ result: "fail" });
+        }
+        else{
+            res.json({ result: "success"});
+        }
+    })
+})
 //recommendation Server 통신
 //추천값 받아오기
 router.post('/recommendation', function(req,res,next){
