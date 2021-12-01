@@ -206,5 +206,7 @@ def reservation(request):
     seat_code = sqldata["seat_code"]
     userid = sqldata["userid"]
     count = sqldata["count"]
-    
+    date = sqldata["end_date"]
+    score = sqldata["score"]
+    density = sqldata["density"]
 
