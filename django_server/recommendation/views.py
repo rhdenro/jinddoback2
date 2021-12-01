@@ -159,6 +159,9 @@ def recommend(request):
             result_count = 0
             while (len(result) < 15):
                 temp=result
+                if df.shape[0]==0:
+                    print('not enough seat')
+                    break
                 for i in temp:
                     if i[0:3] == df.iloc[0,3][0:3]:
                         result_count +=1
