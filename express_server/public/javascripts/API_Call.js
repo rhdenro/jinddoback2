@@ -16,6 +16,7 @@ module.exports = function API_Call(){
                     "preferInfo": preferInfo
                 });
                 request.post(OPTIONS, function(err, res, result){
+                    result = JSON.parse(result)
                     statusCodeHandler(res.statusCode, callback, result);
                 })
             },
@@ -37,10 +38,10 @@ module.exports = function API_Call(){
     function statusCodeHandler(statusCode, callback, result){
         switch(statusCode){
             case 200:
-                callback(null, JSON.parse(result));
+                callback(null, result);
                 break;
             default:
-                callback("error", JSON.parse(result));
+                callback("error", result);
                 break;
         }
     };

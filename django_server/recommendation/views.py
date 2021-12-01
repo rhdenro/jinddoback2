@@ -4,14 +4,12 @@ from django.db import connection
 import json
 
 def recommend(request):
+
     try:
         import pandas as pd
-        sqldata = json.loads(request.body)
-        test_df = pd.read_excel(r'C:\Users\user\Desktop\test.xlsx')
-
+        sqlData = json.loads(request.body)
         cursor = connection.cursor()
-
-        strsql = "SELECT *  FROM seats where seat_available = 1"
+        strSql = "SELECT * FROM seats where seat_available = 1"
         cursor.execute(strSql)
         seats = cursor.fetchall()
         connection.commit()
@@ -23,7 +21,7 @@ def recommend(request):
                           columns=['seat_available', 'pc_available', 'concent_available', 'seat_code', 'preferences',
                                    'edge_seat'])
         result = []
-        fre = 0
+        fre = 0.
         p_num = 3
         if (fre == 1):
             flag = df['preferences'] == p_num
@@ -161,6 +159,7 @@ def recommend(request):
                     df.iloc[i, 6] += S_point-1
             df=df.sort_values(by=['point'], axis=0, ascending=False)
             result_count = 0
+
             while (len(result) < 15):
                 temp=result
                 if df.shape[0]==0:
@@ -179,13 +178,17 @@ def recommend(request):
                     flag = df['seat_code'] == df.iloc[0, 3]
                     df = df.drop(df[flag].index)
 
+
+
     except Exception as ex:
         connection.rollback()
         print("Error: ",ex)
         print("Failed selecting")
+        return JsonResponse({"result":"fail"})
 
-    print(result)
-    return HttpResponse(result)
+
+    return JsonResponse(result, safe=False)
+
 
 def fretend(df):
     temp = {"1SA": 24, "1SB": 24, "1JA": 14, "1JB": 14, "2JA": 34, "2JB": 34, "2SA": 24, "2SB": 24,

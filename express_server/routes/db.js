@@ -124,6 +124,7 @@ router.post('/seats/reservation_can', function(req,res){
         }
     })
 })
+
 //recommendation Server 통신
 //추천값 받아오기
 router.post('/recommendation', function(req,res,next){
@@ -142,9 +143,10 @@ router.post('/recommendation', function(req,res){
     if(req.body.isPreference){
         API_Call().recommendation_preference(req.body.userid, req.body.isPreference, req.body.person, req.body.isEdge, req.preferInfo, function(err, result){
             if(!err){
-                res.json(result);
+                console.log(result[0]);
+                res.send(result);
             } else{
-                res.json(err);
+                res.send(result);
             }
         });
     }
@@ -153,7 +155,7 @@ router.post('/recommendation', function(req,res){
             if(!err){
                 res.json(result);
             } else{
-                res.json(err);
+                res.send(result);
             }
         })
     }
