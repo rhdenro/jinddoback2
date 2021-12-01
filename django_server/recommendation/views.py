@@ -156,11 +156,21 @@ def recommend(request):
                     if S_point<0:continue
                     df.iloc[i, 6] += S_point-1
             df=df.sort_values(by=['point'], axis=0, ascending=False)
-            repeat_int=0
+            result_count = 0
             while (len(result) < 15):
-                result.append(df.iloc[repeat_int,3])
-                repeat_int+=1
-
+                temp=result
+                for i in temp:
+                    if i[0:3] == df.iloc[0,3][0:3]:
+                        result_count +=1
+                if result_count == 2:
+                    result_count = 0
+                    flag = df['seat_code'] == df.iloc[0, 3]
+                    df = df.drop(df[flag].index)
+                else:
+                    result_count = 0
+                    result.append(df.iloc[0,3])
+                    flag = df['seat_code'] == df.iloc[0, 3]
+                    df = df.drop(df[flag].index)
 
     except Exception as ex:
         connection.rollback()
