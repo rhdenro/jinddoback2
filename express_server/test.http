@@ -4,3 +4,15 @@ Content-Type: application/json
 {
   "seat_code": "1JA1"
 }
+
+
+###
+POST localhost:8082/db/recommendation
+Content-Type: application/json
+
+{
+    "userid": "2017037039",
+    "isPreference": 1,
+    "person": 2,
+    "isEdge": 1
+}

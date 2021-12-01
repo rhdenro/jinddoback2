@@ -5,7 +5,7 @@ var mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const saltRounds = 10; //Hashing Rounds
 const request = require('request');
-var API_Call = require('../public/javascripts/API_Call');
+const API_Call= require('../public/javascripts/API_Call');
 //Pool 생성(For MySQL)
 var pool = mysql.createPool({
     host: process.env.MySQL_URL,
@@ -28,8 +28,13 @@ router.post('/register', function (req, res, next) {
      pool.query(sql,param, function(err,rows,fields){
          if(err){
              console.error(err);
+             res.json({
+                 success: 0
+             })
          } else{
-             res.send('<script> alert("Register Success"); location.href="/" </script>');
+             res.json({
+                 success: 1
+             });
          }
      });
  })
@@ -40,26 +45,26 @@ router.post('/login', function(req,resp,next){
     var sql = 'SELECT * FROM users WHERE student_no=?';
     var params = [req.body.userid];
     pool.query(sql,params, function(err,result,fields){
-        if(err) resp.send('<script> alert("로그인 에러"); location.href="/login"</script>');
+        if(err) resp.json({success: 3});
         else{
             if(result.length > 0){
                 bcrypt.compare(req.body.userpassword, result[0].password, (err,res) => {
                     if(err) throw(err);
                     else if(res){
-                        req.session.isLogined = true;
-                        req.session.userid = result[0].student_no;
-                        req.session.name = result[0].name;
-                        req.session.save(function(){
-                            resp.redirect('/')
+                        resp.json({
+                            success: 0,
+                            isLoggedIn: true,
+                            userId: result[0].student_no,
+                            userName: result[0].name
                         })
                     }
                     else{
-                        resp.send('<script> alert("비밀번호가 일치하지 않습니다."); location.href="/login"</script>')
+                        resp.json({success: 1})
                     }
                 })
             }
             else{
-                resp.send('<script> alert("가입되지 않은 학번입니다."); location.href="/login"</script>');
+                resp.json({success: 2})
             }
         }
     })
@@ -84,23 +89,73 @@ router.get('/seats/get', function (req, res, next) {
     })
 });
 
+/* 예약 갱신 -> 초기 3회 예약 판별*/
+router.post('/seats/reservation_con', function(req,res,next){
+    pool.query('SELECT count FROM reservation_log WHERE available = 1 AND seat_code=?', req.body.seat_code, function(err,rows,fields){
+        if(rows[0] == 2){
+            res.json({ result: "fail"})
+        }
+        else{
+            next();
+        }
+    })
+})
+
+/* 예약 갱신 -> 예약횟수 추가 */
+router.post('/seats/reservation_con', function(req,res,next){
+    pool.query('UPDATE reservation_log SET count = count + 1 WHERE seat_code = ? AND available=1', req.body.seat_code, function(err, rows, fields){
+       if(err){
+           res.json({ result: "fail" });
+       }
+       else{
+           res.json({ result: "success" });
+       }
+    });
+})
+
+/* 예약 취소 및 종료 */
+router.post('/seats/reservation_can', function(req,res){
+    pool.query('UPDATE reservation_log SET available=0 WHERE seat_code=? AND available=1', req.body.seat_code, function(err,rows,fields){
+        if(err){
+            res.json({ result: "fail" });
+        }
+        else{
+            res.json({ result: "success"});
+        }
+    })
+})
+
 //recommendation Server 통신
+//추천값 받아오기
+router.post('/recommendation', function(req,res,next){
+    let sql = "SELECT * FROM preference_table WHERE reservation_user=?";
+    let param = [req.body.userid];
+    pool.query(sql, param, function(err, rows, fields){
+        if(err) throw err;
+        else{
+            req.preferInfo = rows;
+            next();
+        }
+    })
+});
+
 router.post('/recommendation', function(req,res){
     if(req.body.isPreference){
-        API_Call.recommendation_preference(req.session.userid, req.body.isPreference, req.body.person, req.body.isEdge, function(err, result){
+        API_Call().recommendation_preference(req.body.userid, req.body.isPreference, req.body.person, req.body.isEdge, req.preferInfo, function(err, result){
             if(!err){
-                res.json(result);
+                console.log(result[0]);
+                res.send(result);
             } else{
-                res.json(err);
+                res.send(result);
             }
         });
     }
     else{
-        API_Call.recommendation(req.sesion.userid, req.body.isPc, req.body.isConcent, req.body.isEdge, function(err, result){
+        API_Call().recommendation(req.body.userid, req.body.isPc, req.body.isConcent, req.body.isEdge, req.preferInfo, function(err, result){
             if(!err){
                 res.json(result);
             } else{
-                res.json(err);
+                res.send(result);
             }
         })
     }
