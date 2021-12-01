@@ -89,6 +89,17 @@ router.get('/seats/get', function (req, res, next) {
     })
 });
 
+/* 예약 갱신 */
+router.post('/seats/reservation_con', function(req,res,next){
+    pool.query('SELECT count FROM reservation_log WHERE available = 1 AND seat_code=?', req.body.seat_code, function(err,rows,fields){
+        if(rows[0] == 2){
+            res.json({ result: "fail"})
+        }
+        else{
+            next();
+        }
+    })
+})
 //recommendation Server 통신
 //추천값 받아오기
 router.post('/recommendation', function(req,res,next){
