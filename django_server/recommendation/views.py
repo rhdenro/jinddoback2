@@ -10,10 +10,12 @@ def recommend(request):
         sqlData = json.loads(request.body)
         cursor = connection.cursor()
         strSql = "SELECT * FROM seats where seat_available = 1"
+        test_df = pd.read_excel(r'C:\Users\user\Desktop\test.xlsx')
         cursor.execute(strSql)
         seats = cursor.fetchall()
         connection.commit()
         connection.close()
+
         pre_df = pd.DataFrame(sqlData['preferInfo'],
                           columns=['reservation_id', 'reservation_user', 'seat_code', 'count', 'date',
                                    'score','density'])
@@ -47,15 +49,15 @@ def recommend(request):
             com = 0
             con = 0
             edge=1
-            if (com == 1):
+            if (com ==  1):
                 flag = df['pc_available'] == 1
                 df = df[flag]
                 flag= df['preferences']==0
                 df = df[flag]
-                flag = test_df['별점'] == 5
+                flag = test_df['score'] == 5
                 tmp_test = test_df[flag]
                 print(tmp_test)
-                for i in tmp_test['좌석 코드']:
+                for i in tmp_test['seat_code']:
                     flag = df['seat_code'] == i
                     if df[flag].empty: continue
                     result.append(df[flag].iloc[0]['seat_code'])
@@ -68,9 +70,9 @@ def recommend(request):
             elif (con == 1):
                 flag = df['concent_available'] == 1
                 df = df[flag]
-                flag = test_df['별점'] == 5
+                flag = test_df['score'] == 5
                 tmp_test = test_df[flag]
-                for i in tmp_test['좌석 코드']:
+                for i in tmp_test['seat_code']:
                     flag = df['seat_code'] == i
                     if not df[flag].empty :
                         result.append(df[flag].iloc[0]['seat_code'])
@@ -92,17 +94,17 @@ def recommend(request):
                 df['point'] = 0
                 flag = df['pc_available'] == 0
                 df = df[flag]
-                flag = test_df['별점'] == 5
+                flag = test_df['score'] == 5
                 if not test_df[flag].empty:
-                    for i in test_df[flag]['좌석 코드']:
+                    for i in test_df[flag]['seat_code']:
                         flag = df['seat_code'] == i
                         if not df[flag].empty:
                             result.append(df[flag].iloc[0]['seat_code'])
                             idx_df = df[flag].index
                             df = df.drop(idx_df)
-                flag = test_df['별점'] >= 3
+                flag = test_df['score'] >= 3
                 fre_ten = 0
-                for i in test_df[flag]['밀집도']:
+                for i in test_df[flag]['density']:
                     fre_ten += i
                 fre_ten = fre_ten / test_df[flag].shape[0]
                 if fre_ten < 50:
@@ -126,18 +128,18 @@ def recommend(request):
                         idx=df[flag].index[i]
                         df.loc[idx, 'point'] +=6
 
-                flag=test_df['별점'] >= 4
+                flag=test_df['score'] >= 4
                 floor=[]
-                for i in test_df[flag]['좌석 코드']:
+                for i in test_df[flag]['seat_code']:
                     floor.append(i[0])
                 floor=set(floor)
                 for i in range(df.shape[0]-1):
                     floor_int=df.iloc[i,3]
                     if str(floor_int[0]) in floor:
                         df.iloc[i,6] += 1
-            flag = test_df['별점'] >= 3
-            tmp_df = test_df[flag]['좌석 코드']
-            count_df=test_df[flag]['사용횟수']
+            flag = test_df['score'] >= 3
+            tmp_df = test_df[flag]['seat_code']
+            count_df=test_df[flag]['count']
             J_point = 0
             S_point = 0
             for i in range(tmp_df.shape[0]-1):
@@ -187,7 +189,7 @@ def recommend(request):
         return JsonResponse({"result":"fail"})
 
 
-    return JsonResponse(result, safe=False)
+    return HttpResponse(result)
 
 
 def fretend(df):
