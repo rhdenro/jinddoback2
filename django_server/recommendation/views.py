@@ -212,16 +212,12 @@ def fretend(df):
     return temp
 
 def reservation(request):
-    #sqldata = json.loads(request.body)
-    #seat_code = sqldata["seat_code"]
-    #userid = sqldata["userid"]
-    #date = sqldata["end_date"]
-    #score = sqldata["score"]
-    #density = sqldata["density"]
-    userid ="2017037039"
-    seat_code ='1SA10'
-    density= 60
-    score=5
+    sqldata = json.loads(request.body)
+    seat_code = sqldata["seat_code"]
+    userid = sqldata["userid"]
+    date = sqldata["end_date"]
+    score = sqldata["score"]
+    density = sqldata["density"]
     cursor = connection.cursor()
     strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
     cursor.execute(strSql,(userid,))
