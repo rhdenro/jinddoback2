@@ -215,7 +215,7 @@ def reservation(request):
     #sqldata = json.loads(request.body)
     #seat_code = sqldata["seat_code"]
     #userid = sqldata["userid"]
-    date = sqldata["end_date"]
+    #date = sqldata["end_date"]
     #score = sqldata["score"]
     #density = sqldata["density"]
     userid ="2017037039"
@@ -227,15 +227,18 @@ def reservation(request):
     cursor.execute(strSql,(userid,))
     connection.commit()
     temp = cursor.fetchall()
-
+    min_date=0
     for i in temp:
-        if date - i[4] > 21:
-            strSql = 'DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
-            cursor.execute(strSql, (userid, i[2],))
-            connection.commit()
+        if i[4] <min_date:
+            min_date=i[4]
 
-
-
+    if date - min_date > 21:
+        strSql = 'DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
+        cursor.execute(strSql, (userid, i[2],))
+        connection.commit()
+        strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
+        cursor.execute(strSql, (userid, seat_code, 1, date, score, density,))
+        connection.commit()
 
     for i in temp:
         if i[2] == seat_code:
@@ -249,7 +252,7 @@ def reservation(request):
             cursor.execute(strSql, (userid, i[2] ,))
             connection.commit()
             strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
-            cursor.execute(strSql, (userid, seat_code , 1 ,None ,score ,density, ))
+            cursor.execute(strSql, (userid, seat_code , 1 ,date ,score ,density, ))
             connection.commit()
 
     strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
