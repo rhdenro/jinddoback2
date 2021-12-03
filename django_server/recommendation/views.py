@@ -7,7 +7,6 @@ def recommend(request):
     result = []
     try:
         import pandas as pd
-
         cursor = connection.cursor()
         strSql = "SELECT * FROM seats where seat_available = 1"
         cursor.execute(strSql)
@@ -220,4 +219,10 @@ def reservation(request):
     date = sqldata["end_date"]
     score = sqldata["score"]
     density = sqldata["density"]
+    cursor = connection.cursor()
+    strSql = "SELECT * FROM seats where seat_available = 1"
+    cursor.execute(strSql)
+    connection.commit()
+    connection.close()
+
 
