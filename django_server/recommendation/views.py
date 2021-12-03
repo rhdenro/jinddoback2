@@ -231,6 +231,7 @@ def reservation(request):
             strSql = 'UPDATE preference_table SET  count =(%s), score=(%s),density=(%s) WHERE reservation_user=(%s) and seat_code=(%s)'
             cursor.execute(strSql, (temp_count, score, density, userid, seat_code,))
             connection.commit()
+            connection.close()
             return HttpResponse('동일')
 
     for i in temp:
@@ -244,6 +245,7 @@ def reservation(request):
         strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
         cursor.execute(strSql, (userid, seat_code, 1, date, score, density,))
         connection.commit()
+        connection.close()
         return HttpResponse("시간 차이")
 
     if flag_date !=1:
@@ -252,6 +254,7 @@ def reservation(request):
             if i[5]<min_score:
                 min_score = i[5]
         if score<min_score:
+            connection.close()
             return HttpResponse('변경 없음')
         else:
             temp.sort(key=lambda x: x[4])
@@ -263,6 +266,7 @@ def reservation(request):
                     strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
                     cursor.execute(strSql, (userid, seat_code , 1 ,date ,score ,density, ))
                     connection.commit()
+                    connection.close()
 
     strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
     cursor.execute(strSql, (userid,))
