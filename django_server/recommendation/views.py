@@ -212,17 +212,33 @@ def fretend(df):
     return temp
 
 def reservation(request):
-    sqldata = json.loads(request.body)
-    seat_code = sqldata["seat_code"]
-    userid = sqldata["userid"]
-    count = sqldata["count"]
-    date = sqldata["end_date"]
-    score = sqldata["score"]
-    density = sqldata["density"]
+    #sqldata = json.loads(request.body)
+    #seat_code = sqldata["seat_code"]
+    #userid = sqldata["userid"]
+    #date = sqldata["end_date"]
+    #score = sqldata["score"]
+    #density = sqldata["density"]
+    userid ="2017037039"
+    seat_code ='1JA10'
+    density= 60
+    score=5
     cursor = connection.cursor()
-    strSql = "SELECT * FROM seats where seat_available = 1"
-    cursor.execute(strSql)
+    strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
+    cursor.execute(strSql,(userid,))
     connection.commit()
+    temp = cursor.fetchall()
+    for i in temp:
+        if i[2] == seat_code:
+            temp_count=i[3]+1
+            strSql='UPDATE preference_table SET  count =(%s), score=(%s) WHERE reservation_user=(%s) and seat_code=(%s)'
+            cursor.execute(strSql, (temp_count,score,userid,seat_code,))
+            connection.commit()
+
+    strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
+    cursor.execute(strSql, (userid,))
+    connection.commit()
+    temp = cursor.fetchall()
+    print(temp[0])
     connection.close()
 
 
