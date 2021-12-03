@@ -4,10 +4,10 @@ from django.db import connection
 import json
 
 def recommend(request):
-
+    result = []
     try:
         import pandas as pd
-        sqlData = json.loads(request.body)
+
         cursor = connection.cursor()
         strSql = "SELECT * FROM seats where seat_available = 1"
         test_df = pd.read_excel(r'C:\Users\user\Desktop\test.xlsx')
@@ -15,16 +15,14 @@ def recommend(request):
         seats = cursor.fetchall()
         connection.commit()
         connection.close()
+        sqlData = json.loads(request.body)
 
-        pre_df = pd.DataFrame(sqlData['preferInfo'],
-                          columns=['reservation_id', 'reservation_user', 'seat_code', 'count', 'date',
-                                   'score','density'])
         df = pd.DataFrame(seats,
                           columns=['seat_available', 'pc_available', 'concent_available', 'seat_code', 'preferences',
                                    'edge_seat'])
-        result = []
-        fre = 0.
-        p_num = 3
+
+        fre = sqlData['isPrefer']
+        p_num = sqlData['person']
         if (fre == 1):
             flag = df['preferences'] == p_num
             df = df[flag]
@@ -46,9 +44,12 @@ def recommend(request):
                         if not df[flag1].empty and not df[flag2].empty:
                             result.append([df['seat_code'].iloc[i], df[flag1]['seat_code'].iloc[0], df[flag2]['seat_code'].iloc[0]])
         else:
-            com = 0
-            con = 0
-            edge=1
+            pre_df = pd.DataFrame(sqlData['preferInfo'],
+                                  columns=['reservation_id', 'reservation_user', 'seat_code', 'count', 'date',
+                                           'score', 'density'])
+            com = sqlData['isPc']
+            con = sqlData['isConcent']
+            edge = sqlData['isEdge']
             if (com ==  1):
                 flag = df['pc_available'] == 1
                 df = df[flag]
@@ -186,7 +187,6 @@ def recommend(request):
         connection.rollback()
         print("Error: ",ex)
         print("Failed selecting")
-        return JsonResponse({"result":"fail"})
 
 
     return HttpResponse(result)
