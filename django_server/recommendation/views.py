@@ -232,7 +232,7 @@ def reservation(request):
             cursor.execute(strSql, (temp_count, score, density, userid, seat_code,))
             connection.commit()
             connection.close()
-            return HttpResponse('동일')
+            return JsonResponse(1)
 
     for i in temp:
         if i[4] <min_date:
@@ -246,7 +246,7 @@ def reservation(request):
         cursor.execute(strSql, (userid, seat_code, 1, date, score, density,))
         connection.commit()
         connection.close()
-        return HttpResponse("시간 차이")
+        return JsonResponse(1)
 
     if flag_date !=1:
         min_score=10
@@ -255,11 +255,11 @@ def reservation(request):
                 min_score = i[5]
         if score<min_score:
             connection.close()
-            return HttpResponse('변경 없음')
+            return JsonResponse(1)
         else:
             temp.sort(key=lambda x: x[4])
             for i in temp:
-                if i[5] <= score:
+                if i[5] <= score and score == min_score:
                     strSql='DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
                     cursor.execute(strSql, (userid, i[2] ,))
                     connection.commit()
@@ -274,5 +274,5 @@ def reservation(request):
     temp = cursor.fetchall()
     print(temp)
     connection.close()
-    return HttpResponse('1234')
+    return JsonResponse(1)
 
