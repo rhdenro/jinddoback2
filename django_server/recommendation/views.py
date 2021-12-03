@@ -219,7 +219,7 @@ def reservation(request):
     #score = sqldata["score"]
     #density = sqldata["density"]
     userid ="2017037039"
-    seat_code ='1JA10'
+    seat_code ='1SA10'
     density= 60
     score=5
     cursor = connection.cursor()
@@ -230,9 +230,17 @@ def reservation(request):
     for i in temp:
         if i[2] == seat_code:
             temp_count=i[3]+1
-            strSql='UPDATE preference_table SET  count =(%s), score=(%s) WHERE reservation_user=(%s) and seat_code=(%s)'
-            cursor.execute(strSql, (temp_count,score,userid,seat_code,))
+            strSql='UPDATE preference_table SET  count =(%s), score=(%s),density=(%s) WHERE reservation_user=(%s) and seat_code=(%s)'
+            cursor.execute(strSql, (temp_count,score,density,userid,seat_code,))
             connection.commit()
+            return HttpResponse('= 작업')
+    for i in temp:
+        if i[5]<score:
+            strSql='DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
+            cursor.execute(strSql, (userid, i[2] ,))
+            connection.commit()
+           
+
 
     strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
     cursor.execute(strSql, (userid,))
