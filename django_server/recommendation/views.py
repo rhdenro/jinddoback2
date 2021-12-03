@@ -10,7 +10,6 @@ def recommend(request):
 
         cursor = connection.cursor()
         strSql = "SELECT * FROM seats where seat_available = 1"
-        test_df = pd.read_excel(r'C:\Users\user\Desktop\test.xlsx')
         cursor.execute(strSql)
         seats = cursor.fetchall()
         connection.commit()
@@ -22,8 +21,8 @@ def recommend(request):
                                    'edge_seat'])
 
         fre = sqlData['isPrefer']
-        p_num = sqlData['person']
         if (fre == 1):
+            p_num = sqlData['person']
             flag = df['preferences'] == p_num
             df = df[flag]
             if p_num == 2:
@@ -44,7 +43,7 @@ def recommend(request):
                         if not df[flag1].empty and not df[flag2].empty:
                             result.append([df['seat_code'].iloc[i], df[flag1]['seat_code'].iloc[0], df[flag2]['seat_code'].iloc[0]])
         else:
-            pre_df = pd.DataFrame(sqlData['preferInfo'],
+            test_df = pd.DataFrame(sqlData['preferInfo'],
                                   columns=['reservation_id', 'reservation_user', 'seat_code', 'count', 'date',
                                            'score', 'density'])
             com = sqlData['isPc']
@@ -95,12 +94,18 @@ def recommend(request):
                 df['point'] = 0
                 flag = df['pc_available'] == 0
                 df = df[flag]
+                fdf = fretend(df)
+                print(fdf)
                 flag = test_df['score'] == 5
                 if not test_df[flag].empty:
                     for i in test_df[flag]['seat_code']:
                         flag = df['seat_code'] == i
                         if not df[flag].empty:
-                            result.append(df[flag].iloc[0]['seat_code'])
+                            tmp_density = fdf[df[flag].iloc[0]['seat_code'][0:3]]
+                            temp_list=[]
+                            temp_list.append(df[flag].iloc[0]['seat_code'])
+                            temp_list.append(tmp_density)
+                            result.append(temp_list)
                             idx_df = df[flag].index
                             df = df.drop(idx_df)
                 flag = test_df['score'] >= 3
@@ -109,7 +114,6 @@ def recommend(request):
                     fre_ten += i
                 fre_ten = fre_ten / test_df[flag].shape[0]
                 if fre_ten < 50:
-                    fdf = fretend(df)
                     for i in df['seat_code']:
                         flag = df['seat_code'] == i
                         test_key = i[0:3]
@@ -177,7 +181,11 @@ def recommend(request):
                     df = df.drop(df[flag].index)
                 else:
                     result_count = 0
-                    result.append(df.iloc[0,3])
+                    tmp_density = fdf[df.iloc[0]['seat_code'][0:3]]
+                    temp_list = []
+                    temp_list.append(df.iloc[0]['seat_code'])
+                    temp_list.append(tmp_density)
+                    result.append(temp_list)
                     flag = df['seat_code'] == df.iloc[0, 3]
                     df = df.drop(df[flag].index)
 
@@ -189,9 +197,7 @@ def recommend(request):
         print("Failed selecting")
 
 
-    return HttpResponse(result)
-
-
+    return JsonResponse(result, safe=False)
 def fretend(df):
     temp = {"1SA": 24, "1SB": 24, "1JA": 14, "1JB": 14, "2JA": 34, "2JB": 34, "2SA": 24, "2SB": 24,
             "2SC": 21, "2SD": 21, "3NA": 80, "3JA": 7, "3JB": 18,
