@@ -227,26 +227,27 @@ def reservation(request):
     cursor.execute(strSql,(userid,))
     connection.commit()
     temp = cursor.fetchall()
+
     for i in temp:
         if i[2] == seat_code:
             temp_count=i[3]+1
             strSql='UPDATE preference_table SET  count =(%s), score=(%s),density=(%s) WHERE reservation_user=(%s) and seat_code=(%s)'
             cursor.execute(strSql, (temp_count,score,density,userid,seat_code,))
             connection.commit()
-            return HttpResponse('= 작업')
     for i in temp:
-        if i[5]<score:
+        if i[5] < score:
             strSql='DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
             cursor.execute(strSql, (userid, i[2] ,))
             connection.commit()
-           
-
+            strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
+            cursor.execute(strSql, (userid, seat_code , 1 ,None ,score ,density, ))
+            connection.commit()
 
     strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
     cursor.execute(strSql, (userid,))
     connection.commit()
     temp = cursor.fetchall()
-    print(temp[0])
+    print(temp)
     connection.close()
-
+    return HttpResponse('1234')
 
