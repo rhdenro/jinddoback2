@@ -215,7 +215,7 @@ def reservation(request):
     #sqldata = json.loads(request.body)
     #seat_code = sqldata["seat_code"]
     #userid = sqldata["userid"]
-    #date = sqldata["end_date"]
+    date = sqldata["end_date"]
     #score = sqldata["score"]
     #density = sqldata["density"]
     userid ="2017037039"
@@ -227,6 +227,15 @@ def reservation(request):
     cursor.execute(strSql,(userid,))
     connection.commit()
     temp = cursor.fetchall()
+
+    for i in temp:
+        if date - i[4] > 21:
+            strSql = 'DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
+            cursor.execute(strSql, (userid, i[2],))
+            connection.commit()
+
+
+
 
     for i in temp:
         if i[2] == seat_code:
