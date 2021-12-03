@@ -12,18 +12,17 @@ module.exports = function API_Call(){
                     "user_id": user_id,
                     "isPrefer": isPreference,
                     "person": person,
-                    "isEdge": isEdge,
-                    "preferInfo": preferInfo
                 });
                 request.post(OPTIONS, function(err, res, result){
                     result = JSON.parse(result)
                     statusCodeHandler(res.statusCode, callback, result);
                 })
             },
-            recommendation: function(user_id, isPc, isConcent, isEdge, preferInfo, callback){
+            recommendation: function(user_id, isPc, isConcent, isEdge, preferInfo, isPreference, callback){
                 OPTIONS.url = process.env.Django_URL;
                 OPTIONS.body = JSON.stringify({
                     "user_id": user_id,
+                    "isPrefer": isPreference,
                     "isPc": isPc,
                     "isConcent": isConcent,
                     "isEdge": isEdge,

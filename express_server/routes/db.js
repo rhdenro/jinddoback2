@@ -151,7 +151,7 @@ router.post('/recommendation', function(req,res){
         });
     }
     else{
-        API_Call().recommendation(req.body.userid, req.body.isPc, req.body.isConcent, req.body.isEdge, req.preferInfo, function(err, result){
+        API_Call().recommendation(req.body.userid, req.body.isPc, req.body.isConcent, req.body.isEdge, req.preferInfo, req.body.isPreference, function(err, result){
             if(!err){
                 res.json(result);
             } else{
