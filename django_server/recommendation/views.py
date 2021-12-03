@@ -241,13 +241,13 @@ def reservation(request):
         if i[4] <min_date:
             min_date=i[4]
     if date - min_date > 21:
+        temp.sort(key=lambda x: x[4])
         strSql = 'DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
-        cursor.execute(strSql, (userid, i[2],))
+        cursor.execute(strSql, (userid, temp[0][2],))
         connection.commit()
         strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
         cursor.execute(strSql, (userid, seat_code, 1, date, score, density,))
         connection.commit()
-        flag_date=1
         return HttpResponse("시간 차이")
 
     if flag_date !=1:
@@ -267,6 +267,7 @@ def reservation(request):
                     strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
                     cursor.execute(strSql, (userid, seat_code , 1 ,date ,score ,density, ))
                     connection.commit()
+
     strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
     cursor.execute(strSql, (userid,))
     connection.commit()
