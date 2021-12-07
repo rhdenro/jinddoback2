@@ -103,6 +103,29 @@ router.post('/seats/getSeats', function(req,res,next){
 
         }
     });
+    function parse(seat_code){
+        return new Promise(function (resolve,reject){
+            let floor = "";
+            let form = "";
+            let sector = "";
+            let sectorNum = "";
+            switch(seat_code[0]){
+                case '1':
+                    floor = "1층";
+                    break;
+                case '2':
+                    floor = "2층";
+                    break;
+                case '3':
+                    floor = "3층";
+                    break;
+                case '4':
+                    floor = "4층";
+                    break;
+            };
+
+        })
+    }
     function repeat(Array){
         return new Promise(async function(resolve,reject){
             const promises = Array.map((row) => query(row.seat_code));
