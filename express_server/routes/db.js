@@ -6,6 +6,9 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10; //Hashing Rounds
 const request = require('request');
 const API_Call = require('../public/javascripts/API_Call');
+const repeatNonPrefer = require('../public/javascripts/Parse');
+const repeatPrefer = require('../public/javascripts/Parse');
+
 //Pool 생성(For MySQL)
 var pool = mysql.createPool({
     host: process.env.MySQL_URL,
@@ -231,7 +234,8 @@ router.post('/recommendation', function(req,res){
                 console.log(result[0]);
                 res.send(result);
             } else{
-
+                repeatPrefer(result)
+                    .then(result => res.send(result));
             }
         });
     }
@@ -240,7 +244,8 @@ router.post('/recommendation', function(req,res){
             if(!err){
                 res.json(result);
             } else{
-                res.send(result);
+                repeatNonPrefer(result)
+                    .then(result => res.send(result));
             }
         })
     }
