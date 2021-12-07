@@ -139,6 +139,18 @@ router.post('/seats/getSeats', function(req,res,next){
                     form = "노트북 전용";
                     break;
             };
+            switch(seat_code[2]){
+                case 'A':
+                    sector = "A섹터";
+                    break;
+                case 'B':
+                    sector = "B섹터";
+                    break;
+                case 'C':
+                    sector = "C섹터";
+                    break;
+            };
+
         })
     }
     function repeat(Array){
