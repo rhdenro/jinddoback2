@@ -218,7 +218,7 @@ def reservation(request):
         sqldata = json.loads(request.body)
         seat_code = sqldata["seat_code"]
         if seat_code[1] == 'P' or seat_code[1] == 'N':
-            return JsonResponse(1)
+            return JsonResponse(200)
         userid = sqldata["userid"]
         date = sqldata["end_date"]
         score = sqldata["score"]
@@ -237,7 +237,7 @@ def reservation(request):
                 cursor.execute(strSql, (temp_count, score, density, userid, seat_code,))
                 connection.commit()
                 connection.close()
-                return JsonResponse(1)
+                return JsonResponse(200)
 
         for i in temp:
             if i[4] <min_date:
@@ -251,7 +251,7 @@ def reservation(request):
             cursor.execute(strSql, (userid, seat_code, 1, date, score, density,))
             connection.commit()
             connection.close()
-            return JsonResponse(1)
+            return JsonResponse(200)
         if flag_date != 1:
             min_score = 10
             for i in temp:
@@ -259,7 +259,7 @@ def reservation(request):
                     min_score = i[5]
             if score < min_score:
                 connection.close()
-                return JsonResponse(1)
+                return JsonResponse(200)
             else:
                 temp.sort(key=lambda x: x[4])
                 for i in temp:
@@ -277,7 +277,7 @@ def reservation(request):
         connection.commit()
         temp = cursor.fetchall()
         connection.close()
-        return JsonResponse(1)
+        return JsonResponse(200)
     except Exception as ex:
         connection.rollback()
         return JsonResponse(406)
