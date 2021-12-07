@@ -101,7 +101,8 @@ router.post('/seats/getSeats', function(req,res,next){
         }
         else{
             console.log(result);
-            repeat(result);
+            repeat(result)
+                .then(result => res.send(result));
         }
     });
     function parse(seat_code){
@@ -230,7 +231,7 @@ router.post('/recommendation', function(req,res){
                 console.log(result[0]);
                 res.send(result);
             } else{
-                res.send(result);
+
             }
         });
     }
