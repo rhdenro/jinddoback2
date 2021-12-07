@@ -43,6 +43,21 @@ function parseCode(subRow){
                 result.floor = "4층";
                 break;
         }
+        //형태 분류
+        switch(seat_code[1]){
+            case 'S':
+                result.floor = "스마트";
+                break;
+            case 'J':
+                result.floor = "조망형";
+                break;
+            case 'P':
+                result.floor = "PC룸";
+                break;
+            case 'N':
+                result.floor = "노트북 전용";
+                break;
+        }
     })
 }
 
