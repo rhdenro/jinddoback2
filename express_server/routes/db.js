@@ -166,15 +166,27 @@ router.post('/recommendation', function(req,res){
 });
 
 //Django Server 2차 통신
-router.post('/reservation', function(req,res){
-    if(req.body.isPrefer){
+router.post('/reservation', function(req,res,next) {
+    if (!req.body.isPrefer) {
         let sql = 'INSERT INTO reservation_log(reservation_user, seat_code, start_time, end_time) VALUES(?,?,?,?);'
         let params = [req.session.userId, req.seat_code, req.start_time, req.end_time]
-        pool.query(sql, params, function(err,result,fields){
-
+        pool.query(sql, params, function (err, result, fields) {
+            if (err) {
+                res.json({result: "fail"});
+            } else {
+                res.json({result: "success"});
+            }
         });
-    } else{
-
+    } else {
+        let sql = 'INSERT INTO reservation_log(reservation_user, seat_code, start_time, end_time) VALUES(?,?,?,?);'
+        let params = [req.session.userId, req.seat_code, req.start_time, req.end_time]
+        pool.query(sql, params, function (err, result, fields) {
+            if (err) {
+                res.json({result: "fail"});
+            } else {
+                next();
+            }
+        });
     }
 });
 
