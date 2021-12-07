@@ -95,74 +95,77 @@ router.post('/users/seat', function(req,res){
 
 // 좌석코드 파싱
 router.post('/seats/getSeats', function(req,res,next){
-    pool.query('SELECT seat_code from preference_table WHERE reservation_user = ?', req.session.userId, function(err,result,fields){
+    pool.query('SELECT seat_code from preference_table WHERE reservation_user = ?', req.body.userId, function(err,result,fields){
         if(err){
             res.json({ result: "fail"});
         }
         else{
-
+            console.log(result);
+            repeat(result);
         }
     });
     function parse(seat_code){
         return new Promise(function (resolve,reject){
-            let floor = "";
-            let form = "";
-            let sector = "";
-            let sectorNum = "";
+            let result = new Object();
+            result.floor = "";
+            result.form  = "";
+            result.sector = "";
+            result.sectorNum = "";
             //층수 파싱
             switch (seat_code[0]){
                 case '1':
-                    floor = "1층";
+                    result.floor = "1층";
                     break;
                 case '2':
-                    floor = "2층";
+                    result.floor = "2층";
                     break;
                 case '3':
-                    floor = "3층";
+                    result.floor = "3층";
                     break;
                 case '4':
-                    floor = "4층";
+                    result.floor = "4층";
                     break;
             };
             //좌석 형태 파싱
             switch (seat_code[1]){
                 case 'S':
-                    form = "스마트";
+                    result.form = "스마트";
                     break;
                 case 'J':
-                    form = "조망형";
+                    result.form = "조망형";
                     break;
                 case 'P':
-                    form = "PC룸";
+                    result.form = "PC룸";
                     break;
                 case 'N':
-                    form = "노트북 전용";
+                    result.form = "노트북 전용";
                     break;
             };
             //섹터 파싱
             switch(seat_code[2]){
                 case 'A':
-                    sector = "A섹터";
+                    result.sector = "A섹터";
                     break;
                 case 'B':
-                    sector = "B섹터";
+                    result.sector = "B섹터";
                     break;
                 case 'C':
-                    sector = "C섹터";
+                    result.sector = "C섹터";
                     break;
             };
             //좌석번호 파싱
             if(seat_code[4]){
-                sectorNum = (seat_code[3] - '0') + (seat_code[4] - '0');
+                result.sectorNum = ((seat_code[3] - '0') * 10) + (seat_code[4] - '0');
             }
             else{
-                sectorNum = seat_code[3] - '0';
+                result.sectorNum = seat_code[3] - '0';
             }
+            resolve(result);
         })
     }
     function repeat(Array){
         return new Promise(async function(resolve,reject){
-            const promises = Array.map((row) => query(row.seat_code));
+            const promises = Array.map((row) => parse(row.seat_code));
             await Promise.all(promises)
                 .then(responses => {
                     resolve(responses);
