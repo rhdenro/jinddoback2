@@ -58,6 +58,21 @@ function parseCode(subRow){
                 result.floor = "노트북 전용";
                 break;
         }
+        //섹터 분류
+        switch(seat_code[2]){
+            case 'A':
+                result.floor = "A섹터";
+                break;
+            case 'B':
+                result.floor = "B섹터";
+                break;
+            case 'C':
+                result.floor = "C섹터";
+                break;
+            case 'D':
+                result.floor = "D섹터";
+                break;
+        }
     })
 }
 
