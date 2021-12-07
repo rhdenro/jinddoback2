@@ -10,70 +10,66 @@ function repeatNonPrefer(Array){
 }
 //하위 row 처리
 function parseNonPrefer(row){
-    return new Promise(async function(resolve,reject){
-        const promises = row.map((subRow) => parseCode(subRow);
-        await Promise.all(promises)
-            .then(result => {
-                resolve(result);
-            })
-    })
-}
-//최종 row 처리
-function parseCode(subRow){
-    return new Promise(function(resolve,reject){
-        let result = new Object();
-        let seat_code = subRow[0];
-        result.density = subRow[1];
-        result.floor = "";
-        result.form  = "";
-        result.sector = "";
-        result.sectorNum = "";
-        //층수 추출
-        switch(seat_code[0]){
-            case '1':
-                result.floor = "1층";
-                break;
-            case '2':
-                result.floor = "2층";
-                break;
-            case '3':
-                result.floor = "3층";
-                break;
-            case '4':
-                result.floor = "4층";
-                break;
-        }
-        //형태 분류
-        switch(seat_code[1]){
-            case 'S':
-                result.floor = "스마트";
-                break;
-            case 'J':
-                result.floor = "조망형";
-                break;
-            case 'P':
-                result.floor = "PC룸";
-                break;
-            case 'N':
-                result.floor = "노트북 전용";
-                break;
-        }
-        //섹터 분류
-        switch(seat_code[2]){
-            case 'A':
-                result.floor = "A섹터";
-                break;
-            case 'B':
-                result.floor = "B섹터";
-                break;
-            case 'C':
-                result.floor = "C섹터";
-                break;
-            case 'D':
-                result.floor = "D섹터";
-                break;
-        }
-    })
+    let result = new Object();
+    let seat_code = row[0];
+    result.density = row[1];
+    result.floor = "";
+    result.form  = "";
+    result.sector = "";
+    result.seatNum = "";
+    //층수 추출
+    switch(seat_code[0]){
+        case '1':
+            result.floor = "1층";
+            break;
+        case '2':
+            result.floor = "2층";
+            break;
+        case '3':
+            result.floor = "3층";
+            break;
+        case '4':
+            result.floor = "4층";
+            break;
+    }
+    //형태 분류
+    switch(seat_code[1]){
+        case 'S':
+            result.form = "스마트";
+            break;
+        case 'J':
+            result.form = "조망형";
+            break;
+        case 'P':
+            result.form = "PC룸";
+            break;
+        case 'N':
+            result.form = "노트북 전용";
+            break;
+    }
+    //섹터 분류
+    switch(seat_code[2]){
+        case 'A':
+            result.sector = "A섹터";
+            break;
+        case 'B':
+            result.sector = "B섹터";
+            break;
+        case 'C':
+            result.sector = "C섹터";
+            break;
+        case 'D':
+            result.sector = "D섹터";
+            break;
+    }
+    //좌석 번호
+    if(seat_code[4]){
+        result.seatNum = ((seat_code[3]-'0')*10) + (seat_code[4]-'0');
+    }
+    else{
+        result.seatNum = seat_code[3]-'0';
+    }
+    return result;
 }
 
 function repeatDefault(Array){
