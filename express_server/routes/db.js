@@ -109,7 +109,8 @@ router.post('/seats/getSeats', function(req,res,next){
             let form = "";
             let sector = "";
             let sectorNum = "";
-            switch(seat_code[0]){
+            //층수 파싱
+            switch (seat_code[0]){
                 case '1':
                     floor = "1층";
                     break;
@@ -123,7 +124,21 @@ router.post('/seats/getSeats', function(req,res,next){
                     floor = "4층";
                     break;
             };
-
+            //좌석 형태 파싱
+            switch (seat_code[1]){
+                case 'S':
+                    form = "스마트";
+                    break;
+                case 'J':
+                    form = "조망형";
+                    break;
+                case 'P':
+                    form = "PC룸";
+                    break;
+                case 'N':
+                    form = "노트북 전용";
+                    break;
+            };
         })
     }
     function repeat(Array){
