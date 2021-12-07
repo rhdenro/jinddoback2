@@ -103,6 +103,15 @@ router.post('/seats/getSeats', function(req,res,next){
 
         }
     });
+    function repeat(Array){
+        return new Promise(async function(resolve,reject){
+            const promises = Array.map((row) => query(row.seat_code));
+            await Promise.all(promises)
+                .then(responses => {
+                    resolve(responses);
+                })
+        })
+    }
 })
 /* 예약 갱신 -> 초기 3회 예약 판별*/
 router.post('/seats/reservation_con', function(req,res,next){
