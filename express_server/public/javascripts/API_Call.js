@@ -31,6 +31,10 @@ module.exports = function API_Call(){
                 request.post(OPTIONS, function(err, res, result){
                     statusCodeHandler(res.statusCode, callback, result);
                 });
+            },
+            reservation: function(user_id, seatCode, rating, end_date, density){
+                OPTIONS.url = process.env.Django_URL;
+
             }
         };
     }

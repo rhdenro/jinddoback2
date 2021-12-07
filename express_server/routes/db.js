@@ -88,7 +88,10 @@ router.get('/seats/get', function (req, res, next) {
         res.json(result);
     })
 });
-
+/* 내 예약자리 알아오기 */
+router.post('/users/seat', function(req,res){
+    pool.query('SELECT seat_code FROM reservation_log WHERE available = 1 AND reservation_user')
+})
 /* 예약 갱신 -> 초기 3회 예약 판별*/
 router.post('/seats/reservation_con', function(req,res,next){
     pool.query('SELECT count FROM reservation_log WHERE available = 1 AND seat_code=?', req.body.seat_code, function(err,rows,fields){
