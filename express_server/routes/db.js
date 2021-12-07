@@ -139,6 +139,7 @@ router.post('/seats/getSeats', function(req,res,next){
                     form = "노트북 전용";
                     break;
             };
+            //섹터 파싱
             switch(seat_code[2]){
                 case 'A':
                     sector = "A섹터";
@@ -150,7 +151,13 @@ router.post('/seats/getSeats', function(req,res,next){
                     sector = "C섹터";
                     break;
             };
-
+            //좌석번호 파싱
+            if(seat_code[4]){
+                sectorNum = (seat_code[3] - '0') + (seat_code[4] - '0');
+            }
+            else{
+                sectorNum = seat_code[3] - '0';
+            }
         })
     }
     function repeat(Array){
