@@ -197,6 +197,8 @@ def recommend(request):
 
 
     return JsonResponse(result, safe=False)
+
+
 def fretend(df):
     temp = {"1SA": 24, "1SB": 24, "1JA": 14, "1JB": 14, "2JA": 34, "2JB": 34, "2SA": 24, "2SB": 24,
             "2SC": 21, "2SD": 21, "3NA": 80, "3JA": 7, "3JB": 18,
@@ -212,67 +214,71 @@ def fretend(df):
     return temp
 
 def reservation(request):
-    sqldata = json.loads(request.body)
-    seat_code = sqldata["seat_code"]
-    userid = sqldata["userid"]
-    date = sqldata["end_date"]
-    score = sqldata["score"]
-    density = sqldata["density"]
-    cursor = connection.cursor()
-    strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
-    cursor.execute(strSql,(userid,))
-    connection.commit()
-    temp = cursor.fetchall()
-    min_date=0
-    flag_date=0
-    for i in temp:
-        if i[2] == seat_code:
-            temp_count = i[3] + 1
-            strSql = 'UPDATE preference_table SET  count =(%s), score=(%s),density=(%s) WHERE reservation_user=(%s) and seat_code=(%s)'
-            cursor.execute(strSql, (temp_count, score, density, userid, seat_code,))
+    try:
+        sqldata = json.loads(request.body)
+        seat_code = sqldata["seat_code"]
+        if seat_code[1] == 'P' or seat_code[1] == 'N':
+            return JsonResponse(1)
+        userid = sqldata["userid"]
+        date = sqldata["end_date"]
+        score = sqldata["score"]
+        density = sqldata["density"]
+        cursor = connection.cursor()
+        strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
+        cursor.execute(strSql, (userid,))
+        connection.commit()
+        temp = cursor.fetchall()
+        min_date = 0
+        flag_date = 0
+        for i in temp:
+            if i[2] == seat_code:
+                temp_count = i[3] + 1
+                strSql = 'UPDATE preference_table SET  count =(%s), score=(%s),density=(%s) WHERE reservation_user=(%s) and seat_code=(%s)'
+                cursor.execute(strSql, (temp_count, score, density, userid, seat_code,))
+                connection.commit()
+                connection.close()
+                return JsonResponse(1)
+
+        for i in temp:
+            if i[4] <min_date:
+                min_date=i[4]
+        if date - min_date > 21:
+            temp.sort(key=lambda x: x[4])
+            strSql = 'DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
+            cursor.execute(strSql, (userid, temp[0][2],))
+            connection.commit()
+            strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
+            cursor.execute(strSql, (userid, seat_code, 1, date, score, density,))
             connection.commit()
             connection.close()
             return JsonResponse(1)
+        if flag_date != 1:
+            min_score = 10
+            for i in temp:
+                if i[5]<min_score:
+                    min_score = i[5]
+            if score < min_score:
+                connection.close()
+                return JsonResponse(1)
+            else:
+                temp.sort(key=lambda x: x[4])
+                for i in temp:
+                    if i[5] <= score and score == min_score:
+                        strSql='DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
+                        cursor.execute(strSql, (userid, i[2] ,))
+                        connection.commit()
+                        strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
+                        cursor.execute(strSql, (userid, seat_code , 1 ,date ,score ,density, ))
+                        connection.commit()
+                        connection.close()
 
-    for i in temp:
-        if i[4] <min_date:
-            min_date=i[4]
-    if date - min_date > 21:
-        temp.sort(key=lambda x: x[4])
-        strSql = 'DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
-        cursor.execute(strSql, (userid, temp[0][2],))
+        strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
+        cursor.execute(strSql, (userid,))
         connection.commit()
-        strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
-        cursor.execute(strSql, (userid, seat_code, 1, date, score, density,))
-        connection.commit()
+        temp = cursor.fetchall()
         connection.close()
         return JsonResponse(1)
-
-    if flag_date !=1:
-        min_score=10
-        for i in temp:
-            if i[5]<min_score:
-                min_score = i[5]
-        if score<min_score:
-            connection.close()
-            return JsonResponse(1)
-        else:
-            temp.sort(key=lambda x: x[4])
-            for i in temp:
-                if i[5] <= score and score == min_score:
-                    strSql='DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
-                    cursor.execute(strSql, (userid, i[2] ,))
-                    connection.commit()
-                    strSql = 'INSERT INTO preference_table(reservation_user, seat_code , count ,date,score,density) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))'
-                    cursor.execute(strSql, (userid, seat_code , 1 ,date ,score ,density, ))
-                    connection.commit()
-                    connection.close()
-
-    strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
-    cursor.execute(strSql, (userid,))
-    connection.commit()
-    temp = cursor.fetchall()
-    print(temp)
-    connection.close()
-    return JsonResponse(1)
+    except Exception as ex:
+        connection.rollback()
+        return JsonResponse(406)
 
