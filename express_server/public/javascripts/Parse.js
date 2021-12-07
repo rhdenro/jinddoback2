@@ -18,7 +18,7 @@ function parseNonPrefer(row){
             })
     })
 }
-
+//최종 row 처리
 function parseCode(subRow){
     return new Promise(function(resolve,reject){
         let result = new Object();
@@ -28,9 +28,24 @@ function parseCode(subRow){
         result.form  = "";
         result.sector = "";
         result.sectorNum = "";
+        //층수 추출
+        switch(seat_code[0]){
+            case '1':
+                result.floor = "1층";
+                break;
+            case '2':
+                result.floor = "2층";
+                break;
+            case '3':
+                result.floor = "3층";
+                break;
+            case '4':
+                result.floor = "4층";
+                break;
+        }
     })
 }
-//최종 row 처리
+
 function repeatDefault(Array){
     return new Promise(function(resolve,reject){
     })
