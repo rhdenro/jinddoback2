@@ -271,12 +271,6 @@ def reservation(request):
                         cursor.execute(strSql, (userid, seat_code , 1 ,date ,score ,density, ))
                         connection.commit()
                         connection.close()
-
-        strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
-        cursor.execute(strSql, (userid,))
-        connection.commit()
-        temp = cursor.fetchall()
-        connection.close()
         return JsonResponse(200)
     except Exception as ex:
         connection.rollback()
