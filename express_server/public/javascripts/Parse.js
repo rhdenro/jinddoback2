@@ -8,10 +8,12 @@ function repeatNonPrefer(Array){
             })
     })
 }
+
 //하위 row 처리
 function parseNonPrefer(row){
     let result = new Object();
     let seat_code = row[0];
+    result.seatCode = seat_code;
     result.density = row[1];
     result.floor = "";
     result.form  = "";
@@ -72,8 +74,19 @@ function parseNonPrefer(row){
     return result;
 }
 
-function repeatDefault(Array){
-    return new Promise(function(resolve,reject){
+//우대좌석 처리
+function repeatPrefer(Array){
+    return new Promise(async function(resolve,reject){
+        const promises = Array.map((row) => parsePrefer(row));
+        await Promise.all(promises)
+            .then(responses => {
+                resolve(responses);
+            })
     })
 }
+
+function parsePrefer(row){
+
+}
+
 module.exports = repeatNonPrefer(), repeatDefault();
