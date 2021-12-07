@@ -5,7 +5,7 @@ var mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const saltRounds = 10; //Hashing Rounds
 const request = require('request');
-const API_Call= require('../public/javascripts/API_Call');
+const API_Call = require('../public/javascripts/API_Call');
 //Pool 생성(For MySQL)
 var pool = mysql.createPool({
     host: process.env.MySQL_URL,
@@ -166,8 +166,8 @@ router.post('/recommendation', function(req,res){
 });
 
 //Django Server 2차 통신
-router.post('/reservation', function(req,res,next) {
-    if (!req.body.isPrefer) {
+router.post('/reservation', function(req,res,next){
+    if (!(req.body.isPrefer)) {
         let sql = 'INSERT INTO reservation_log(reservation_user, seat_code, start_time, end_time) VALUES(?,?,?,?);'
         let params = [req.session.userId, req.seat_code, req.start_time, req.end_time]
         pool.query(sql, params, function (err, result, fields) {
@@ -177,7 +177,7 @@ router.post('/reservation', function(req,res,next) {
                 res.json({result: "success"});
             }
         });
-    } else {
+    } else{
         let sql = 'INSERT INTO reservation_log(reservation_user, seat_code, start_time, end_time) VALUES(?,?,?,?);'
         let params = [req.session.userId, req.seat_code, req.start_time, req.end_time]
         pool.query(sql, params, function (err, result, fields) {
@@ -188,6 +188,16 @@ router.post('/reservation', function(req,res,next) {
             }
         });
     }
+});
+
+router.post('/reservation', function(req,res) {
+    API_Call().reservation(req.body.userId, req.body.seatCode, req.body.rating, req.body.end_date, req.density,function(err, result){
+        if(!err){
+            res.json(result);
+        } else{
+            res.send(result);
+        }
+    })
 });
 
 module.exports = router;
