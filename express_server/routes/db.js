@@ -129,6 +129,7 @@ router.post('/seats/reservation_can', function(req,res){
 })
 
 //recommendation Server 통신
+
 //추천값 받아오기
 router.post('/recommendation', function(req,res,next){
     let sql = "SELECT * FROM preference_table WHERE reservation_user=?";
@@ -161,6 +162,19 @@ router.post('/recommendation', function(req,res){
                 res.send(result);
             }
         })
+    }
+});
+
+//Django Server 2차 통신
+router.post('/reservation', function(req,res){
+    if(req.body.isPrefer){
+        let sql = 'INSERT INTO reservation_log(reservation_user, seat_code, start_time, end_time) VALUES(?,?,?,?);'
+        let params = [req.session.userId, req.seat_code, req.start_time, req.end_time]
+        pool.query(sql, params, function(err,result,fields){
+
+        });
+    } else{
+
     }
 });
 
