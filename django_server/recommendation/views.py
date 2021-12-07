@@ -167,16 +167,16 @@ def recommend(request):
             result_count = 0
 
             while (len(result) < 15):
-                temp=result
-                if df.shape[0]==0:
+                temp = result
+                if df.shape[0] == 0:
                     print('not enough seat')
                     break
                 for i in temp:
-                    if i[0:3] == df.iloc[0,3][0:3]:
+                    if i[0][0:3] == df.iloc[0, 3][0:3]:
                         result_count +=1
                 if result_count == 2:
                     result_count = 0
-                    flag = df['seat_code'] == df.iloc[0, 3]
+                    flag = df['seat_code'] == df.iloc[0]['seat_code']
                     df = df.drop(df[flag].index)
                 else:
                     result_count = 0
