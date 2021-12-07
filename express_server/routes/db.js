@@ -92,6 +92,18 @@ router.get('/seats/get', function (req, res, next) {
 router.post('/users/seat', function(req,res){
     pool.query('SELECT seat_code FROM reservation_log WHERE available = 1 AND reservation_user')
 })
+
+// 좌석코드 파싱
+router.post('/seats/getSeats', function(req,res,next){
+    pool.query('SELECT seat_code from preference_table WHERE reservation_user = ?', req.session.userId, function(err,result,fields){
+        if(err){
+            res.json({ result: "fail"});
+        }
+        else{
+
+        }
+    });
+})
 /* 예약 갱신 -> 초기 3회 예약 판별*/
 router.post('/seats/reservation_con', function(req,res,next){
     pool.query('SELECT count FROM reservation_log WHERE available = 1 AND seat_code=?', req.body.seat_code, function(err,rows,fields){
@@ -129,7 +141,6 @@ router.post('/seats/reservation_can', function(req,res){
 })
 
 //recommendation Server 통신
-
 //추천값 받아오기
 router.post('/recommendation', function(req,res,next){
     let sql = "SELECT * FROM preference_table WHERE reservation_user=?";
