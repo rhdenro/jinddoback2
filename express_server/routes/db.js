@@ -233,7 +233,24 @@ router.post('/seats/reservation_con', function(req,res,next){
     });
 })
 
-/* 예약 취소 및 종료 */
+/* create Reservaiton */
+router.post('/reservation', function(req,res){
+    let params = [req.body.userid, req.body.seat_code]
+    let sql = "Insert INTO reservation_log(reservation_user, seat_code, start_time, end_time, count) VALUES(?,?,?,?,?)";
+    if(Array.isArray(req.body.seat_code)){
+        repeatQuery();
+    } else {
+        pool.query(sql, params, function (err, result, fields) {
+            if (err) {
+                res.json({result: "예약 실패"});
+            } else {
+                res.json({result: "예약에 성공했습니다."});
+            }
+        })
+    }
+})
+
+/* 예약 취소 및 종료 -> Django 통신 요청부*/
 router.post('/seats/reservation_can', function(req,res,next){
     pool.query('UPDATE seats SET seat_available=1 WHERE seat_code=?', req.body.seat_code, function(err,rows,fields){
         if(err){
