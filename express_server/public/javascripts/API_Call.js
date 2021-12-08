@@ -6,7 +6,7 @@ module.exports = function API_Call(){
             body: null
         };
         return{
-            recommendation_preference: function(user_id, isPreference, person, isEdge, preferInfo, callback){
+            recommendation_preference: function(user_id, isPreference, person, preferInfo, callback){
                 OPTIONS.url = process.env.Django_URL;
                 OPTIONS.body = JSON.stringify({
                     "user_id": user_id,
@@ -14,7 +14,6 @@ module.exports = function API_Call(){
                     "person": person,
                 });
                 request.post(OPTIONS, function(err, res, result){
-                    result = JSON.parse(result)
                     statusCodeHandler(res.statusCode, callback, result);
                 })
             },
@@ -50,10 +49,10 @@ module.exports = function API_Call(){
     function statusCodeHandler(statusCode, callback, result){
         switch(statusCode){
             case 200:
-                callback(null, result);
+                callback(null, JSON.parse(result));
                 break;
             default:
-                callback("error", result);
+                callback("error", JSON.parse(result));
                 break;
         }
     };

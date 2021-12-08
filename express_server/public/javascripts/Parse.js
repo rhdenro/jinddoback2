@@ -1,5 +1,5 @@
 //우대좌석 미사용자 처리
-function repeatNonPrefer(Array){
+const repeatNonPrefer = (Array) => {
     return new Promise(async function (resolve, reject){
         const promises = Array.map((row) => parseNonPrefer(row));
         await Promise.all(promises)
@@ -75,7 +75,7 @@ function parseNonPrefer(row){
 }
 
 //우대좌석 처리
-function repeatPrefer(Array){
+const repeatPrefer = (Array) => {
     return new Promise(async function(resolve,reject){
         const promises = Array.map((row) => parsePrefer(row));
         await Promise.all(promises)
@@ -149,4 +149,7 @@ function parsePrefer(row){
     return result;
 }
 
-module.exports = repeatNonPrefer(), repeatPrefer();
+module.exports = {
+    repeatPrefer,
+    repeatNonPrefer
+}

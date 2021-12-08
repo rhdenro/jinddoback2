@@ -6,8 +6,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10; //Hashing Rounds
 const request = require('request');
 const API_Call = require('../public/javascripts/API_Call');
-const repeatNonPrefer = require('../public/javascripts/Parse');
-const repeatPrefer = require('../public/javascripts/Parse');
+const parseModule = require('../public/javascripts/Parse.js');
 
 //Pool 생성(For MySQL)
 var pool = mysql.createPool({
@@ -229,23 +228,22 @@ router.post('/recommendation', function(req,res,next){
 
 router.post('/recommendation', function(req,res){
     if(req.body.isPreference){
-        API_Call().recommendation_preference(req.body.userid, req.body.isPreference, req.body.person, req.body.isEdge, req.preferInfo, function(err, result){
+        API_Call().recommendation_preference(req.body.userid, req.body.isPreference, req.body.person, req.preferInfo, function(err, result){
             if(!err){
-                console.log(result[0]);
-                res.send(result);
-            } else{
-                repeatPrefer(result)
+                parseModule.repeatPrefer(result)
                     .then(result => res.send(result));
+            } else{
+                res.send(result);
             }
         });
     }
     else{
         API_Call().recommendation(req.body.userid, req.body.isPc, req.body.isConcent, req.body.isEdge, req.preferInfo, req.body.isPreference, function(err, result){
             if(!err){
-                res.json(result);
-            } else{
-                repeatNonPrefer(result)
+                parseModule.repeatNonPrefer(result)
                     .then(result => res.send(result));
+            } else{
+                res.json(result);
             }
         })
     }
