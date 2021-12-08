@@ -176,6 +176,7 @@ router.post('/seats/getSeats', function(req,res,next){
         })
     }
 })
+
 /* 예약 갱신 -> 초기 3회 예약 판별*/
 router.post('/seats/reservation_con', function(req,res,next){
     pool.query('SELECT count FROM reservation_log WHERE available = 1 AND seat_code=?', req.body.seat_code, function(err,rows,fields){
@@ -201,13 +202,24 @@ router.post('/seats/reservation_con', function(req,res,next){
 })
 
 /* 예약 취소 및 종료 */
-router.post('/seats/reservation_can', function(req,res){
+router.post('/seats/reservation_can', function(req,res,next){
+    pool.query('UPDATE seats SET seat_available=1 WHERE seat_code=?', req.body.seat_code, function(err,rows,fields){
+        if(err){
+            res.json({ result: "fail" });
+        }
+        else{
+            next();
+        }
+    })
+})
+
+router.post('/seats/reservation_can', function(req,res,next){
     pool.query('UPDATE reservation_log SET available=0 WHERE seat_code=? AND available=1', req.body.seat_code, function(err,rows,fields){
         if(err){
             res.json({ result: "fail" });
         }
         else{
-            res.json({ result: "success"});
+            next();
         }
     })
 })
@@ -250,7 +262,7 @@ router.post('/recommendation', function(req,res){
 });
 
 //Django Server 2차 통신
-router.post('/reservation', function(req,res,next){
+router.post('/reservation_fin', function(req,res,next){
     if (!(req.body.isPrefer)) {
         let sql = 'INSERT INTO reservation_log(reservation_user, seat_code, start_time, end_time) VALUES(?,?,?,?);'
         let params = [req.session.userId, req.seat_code, req.start_time, req.end_time]
@@ -274,7 +286,7 @@ router.post('/reservation', function(req,res,next){
     }
 });
 
-router.post('/reservation', function(req,res) {
+router.post('/reservation_fin', function(req,res) {
     API_Call().reservation(req.body.userId, req.body.seatCode, req.body.rating, req.body.end_date, req.density,function(err, result){
         if(!err){
             res.json(result);
