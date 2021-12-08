@@ -235,34 +235,42 @@ router.post('/seats/reservation_con', function(req,res,next){
 
 /* create Reservaiton */
 router.post('/reservation', function(req,res){
-    let Date = new Date();
+    let now = new Date();
+    let end = new Date();
+    end.setMinutes(end.getMinutes() +30);
     if(Array.isArray(req.body.seat_code)){
-        repeatQuery(req.body.seat_code, req.body.userid)
+        repeatQuery(req.body.seat_code, req.body.userid, now, end)
             .then(result => {
                 res.json({result: "예약에 성공했습니다."});
-            })
+            }).catch((err)=>{
+                console.error(err);
+        })
     } else {
-        let params = [req.body.userid, req.body.seat_code, Date, "", 0]
+        let params = [req.body.userid, req.body.seat_code, now, end, 0]
         let sql = "Insert INTO reservation_log(reservation_user, seat_code, start_time, end_time, count) VALUES(?,?,?,?,?)";
         pool.query(sql, params, function (err, result, fields) {
             if (err) {
+                console.error(err);
                 res.json({result: "예약 실패"});
             } else {
                 res.json({result: "예약에 성공했습니다."});
             }
         })
     }
-    function repeatQuery(Array, userid) {
+    function repeatQuery(Array, userid, now, end) {
         return new Promise(async function (resolve, reject) {
-            const promises = Array.map((row) => query(row, userid));
+            const promises = Array.map((row) => query(row, userid, now, end));
             await Promise.all(promises)
                 .then(responses => {
                     resolve(responses);
                 })
+                .catch(error => {
+                    reject(error);
+                })
         })
     };
-    function query(seat_code,userid){
-        let params = [userid, seat_code, Date, "", 0]
+    function query(seat_code,userid, now, end){
+        let params = [userid, seat_code, now, end, 0]
         let sql = "Insert INTO reservation_log(reservation_user, seat_code, start_time, end_time, count) VALUES(?,?,?,?,?)";
         pool.query(sql, params, function(err,result,fields){
             if(err){
