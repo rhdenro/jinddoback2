@@ -7,7 +7,7 @@ module.exports = function API_Call(){
         };
         return{
             recommendation_preference: function(user_id, isPreference, person, preferInfo, callback){
-                OPTIONS.url = process.env.Django_URL;
+                OPTIONS.url = process.env.Django_URL + "/execute/";
                 OPTIONS.body = JSON.stringify({
                     "user_id": user_id,
                     "isPrefer": isPreference,
@@ -18,7 +18,7 @@ module.exports = function API_Call(){
                 })
             },
             recommendation: function(user_id, isPc, isConcent, isEdge, preferInfo, isPreference, callback){
-                OPTIONS.url = process.env.Django_URL;
+                OPTIONS.url = process.env.Django_URL + "/execute/";
                 OPTIONS.body = JSON.stringify({
                     "user_id": user_id,
                     "isPrefer": isPreference,
@@ -32,7 +32,7 @@ module.exports = function API_Call(){
                 });
             },
             reservation: function(user_id, seatCode, rating, end_date, density, callback){
-                OPTIONS.url = process.env.Django_URL;
+                OPTIONS.url = process.env.Django_URL + "/reservation/";
                 OPTIONS.body = JSON.stringify({
                     "user_id": user_id,
                     "seatCode": seatCode,
