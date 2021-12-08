@@ -90,6 +90,7 @@ router.get('/seats/get', function (req, res, next) {
         res.json(result);
     })
 });
+
 /* 내 예약자리 알아오기 */
 router.post('/users/seat', function(req,res){
     pool.query('SELECT seat_code FROM reservation_log WHERE available = 1 AND reservation_user')
@@ -239,11 +240,12 @@ router.post('/recommendation', function(req,res,next){
 });
 
 router.post('/recommendation', function(req,res){
+    console.log(req.body);
     if(req.body.isPreference){
-        API_Call().recommendation_preference(req.body.userid, req.body.isPreference, req.body.person, req.preferInfo, function(err, result){
+        API_Call().recommendation_preference(req.body.userid, req.body.isPreference, req.body.text, req.preferInfo, function(err, result){
             if(!err){
                 parseModule.repeatPrefer(result)
-                    .then(result => res.send(result));
+                    .then((result) => res.json({result: result, text:req.body.text}));
             } else{
                 res.send(result);
             }

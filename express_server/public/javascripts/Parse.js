@@ -12,6 +12,7 @@ const repeatNonPrefer = (Array) => {
 //하위 row 처리
 function parseNonPrefer(row){
     let result = new Object();
+
     let seat_code = row[0];
     result.seatCode = seat_code;
     result.density = row[1];
