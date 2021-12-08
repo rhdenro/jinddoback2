@@ -34,12 +34,43 @@ router.post('/register', function (req, res, next) {
                  success: 0
              })
          } else{
-             res.json({
-                 success: 1
-             });
+             next();
          }
      });
  })
+});
+
+router.post('/register', function (req, res) {
+    let Date = new Date();
+    var param = [req.body.student_no];
+    var seat_no = ["1SA1", "1JA1", "2SA1", "3JA1", "4SA1"]
+    setDefault(Date, seat_no, student_no)
+        .then(result => {
+            res.json({result: "success"});
+        })
+    function setDefault(Date, Array, student_no) {
+        return new Promise(async function (resolve, reject) {
+            const promises = Array.map((row) => query(Date, row, student_no));
+            await Promise.all(promises)
+                .then(responses => {
+                    resolve(responses);
+                })
+        })
+    }
+    function query(Date, seat_no, student_no){
+        return new Promise(function(resolve,reject){
+            let params = [student_no, seat_no, Date, 2, 0]
+            let sql = "INSERT INTO preference_table(reservation_user, seat_code, date, score, density) VALUES(?, ?, ?, ?, ?);";
+            pool.query(sql, params, function(err,result,fields){
+                if(err){
+                    reject(err);
+                }
+                else{
+                    resolve("success");
+                }
+            })
+        })
+    }
 });
 
 /* login */
