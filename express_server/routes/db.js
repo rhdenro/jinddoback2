@@ -235,11 +235,15 @@ router.post('/seats/reservation_con', function(req,res,next){
 
 /* create Reservaiton */
 router.post('/reservation', function(req,res){
-    let params = [req.body.userid, req.body.seat_code]
-    let sql = "Insert INTO reservation_log(reservation_user, seat_code, start_time, end_time, count) VALUES(?,?,?,?,?)";
+    let Date = new Date();
     if(Array.isArray(req.body.seat_code)){
-        repeatQuery();
+        repeatQuery(req.body.seat_code, req.body.userid)
+            .then(result => {
+                res.json({result: "예약에 성공했습니다."});
+            })
     } else {
+        let params = [req.body.userid, req.body.seat_code, Date, "", 0]
+        let sql = "Insert INTO reservation_log(reservation_user, seat_code, start_time, end_time, count) VALUES(?,?,?,?,?)";
         pool.query(sql, params, function (err, result, fields) {
             if (err) {
                 res.json({result: "예약 실패"});
@@ -248,7 +252,29 @@ router.post('/reservation', function(req,res){
             }
         })
     }
-})
+    function repeatQuery(Array, userid) {
+        return new Promise(async function (resolve, reject) {
+            const promises = Array.map((row) => query(row, userid));
+            await Promise.all(promises)
+                .then(responses => {
+                    resolve(responses);
+                })
+        })
+    };
+    function query(seat_code,userid){
+        let params = [userid, seat_code, Date, "", 0]
+        let sql = "Insert INTO reservation_log(reservation_user, seat_code, start_time, end_time, count) VALUES(?,?,?,?,?)";
+        pool.query(sql, params, function(err,result,fields){
+            if(err){
+                reject(err);
+            }
+            else{
+                resolve("success")
+            }
+        })
+    }
+});
+
 
 /* 예약 취소 및 종료 -> Django 통신 요청부*/
 router.post('/seats/reservation_can', function(req,res,next){
