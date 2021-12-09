@@ -50,3 +50,33 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
     boxSizing: 'border-box',
   },
 }));
+function CustomizedSwitches(props) {
+  const [textArea, setTextArea] = useState(props.textArea);
+  const [states,setStates] = useState(props.states);
+  const [seatInfo, setSeatInfo] = useState({});
+  async function onClick(e,text){
+    alert(text.value); // text.value = 우대인원 내부 텍스트
+    alert(states); //states = 3가지 체크박스
+    let isPrefer = false;
+    if(text.value !== ""){
+      isPrefer = true
+    }
+    await axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db/recommendation',{
+      userid: sessionStorage.getItem('userId'),
+      text: text.value,
+      isEdge: states[0],
+      isPc: states[1],
+      isConcent: states[2],
+      isPreference: isPrefer
+    },{
+      'Access-Contorl-Allow-Credentials': "true",
+      withCredentials: true
+  }).then(result => {
+    console.log(result);
+    props.onChange(result);
+  })
+  }
+ 
+}
+
+export default CustomizedSwitches;
