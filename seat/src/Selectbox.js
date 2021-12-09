@@ -23,4 +23,8 @@ function ComboBox(props) {
 }
 export default ComboBox;
 
+const selectfirstseat = [
+  {label: '2인용 PC좌석'},
+  {label: '3인용 좌석'}
+];
 
