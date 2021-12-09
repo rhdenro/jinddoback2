@@ -1,31 +1,25 @@
 import React from 'react';
 import "./Header.css";
 import mainpagelogo from './images/mainpagelogo.png';
+import {Route, Link} from 'react-router-dom';
 
-const MenuItem = ({ active, children, to }) => (
-    <div className="menu-item">{children}</div>
-  );
-  
-  const Header = () => {
+  function Header()  {
     return (
-      <div>     
-          <div className="headername">여긴어때</div>
-      
-            <div className="headerlogo">
-              <img src={mainpagelogo} alt='mainpagelogo'/>  
-            </div>
-
-
-        <div className="menu">
-          <MenuItem>전체좌석보기</MenuItem>
-          <MenuItem>사용가능좌석보기</MenuItem>
-          <MenuItem>추천받기</MenuItem>
-          <MenuItem>예약하기</MenuItem>
-          <MenuItem>연장하기</MenuItem>
-          <MenuItem>마이페이지</MenuItem>
+      <div className="Head">
+        <div className="Head-left">
+          <img src={mainpagelogo} className="logo" alt='mainpagelogo'/>
         </div>
+        <div>
+          <div className="Headername"> 여긴어때 </div>
+        </div>
+        <div class="Head-right">
+          <div> 환영합니다<br />{sessionStorage.userName}님</div>
+          {sessionStorage.isLogined && <div><Link to="/logout">로그아웃<br/> 하러가기!</Link></div>} {!sessionStorage.isLogined && <div><Link to="/login">로그인<br /> 하러가기!</Link></div>}
         
+        </div>
+    
       </div>
+
     );
   };
   
