@@ -390,34 +390,24 @@ router.post('/recommendation', function(req,res){
     }
 });
 
-//Django Server 2차 통신
+//예약 종료
 router.post('/reservation_fin', function(req,res,next){
-    if (!(req.body.isPrefer)) {
-        let sql = 'UPDATE reseration_log SET available=false WHERE reservation_user=? AND available=true;'
-        let params = [req.body.userid]
-        pool.query(sql, params, function (err, result, fields) {
-            if (err) {
-                res.json({result: "fail"});
-            } else {
-                res.json({result: "success"});
-            }
-        });
-    } else{
-        let sql = "SELECT start_time, end_time, seat_code FROM reservation_log WHERE reservation_user=? AND available = true;"
-        let params = [req.body.userid]
-        pool.query(sql, params, function(err, result, fields){
-            if(err){
-                res.json({result: "fail"});
-''            }
-            else{
-                req.timeSeatInfo = result[0];
-                next();
-            }
-        })
-    }
-});
+    //시작 시간, 종료 시간, 좌석 코드 얻어오기
+    let sql = "SELECT start_time, end_time, seat_code FROM reservation_log WHERE reservation_user=? AND available = true;"
+    let params = [req.body.userid]
+    pool.query(sql, params, function(err, result, fields){
+        if(err){
+            res.json({result: "fail"});
+        }
+        else{
+            req.timeSeatInfo = result[0];
+            next();
+        }
+    });
+})
 
 router.post('/reservation_fin', function(req,res,next){
+    //예약기록에서 예약기록 비활성화
     let sql = "UPDATE reseration_log SET available=false WHERE reservation_user=? AND available=true;"
     pool.query(sql, req.body.userid, function(err,result,fields){
         if(err){
@@ -429,14 +419,35 @@ router.post('/reservation_fin', function(req,res,next){
     })
 });
 
-router.post('/reservation_fin', function(req,res) {
-    API_Call().reservation(req.body.userid, req.timeSeatInfo.seat_code, req.body.rating, req.timeSeatInfo.end_date, req.density,function(err, result){
-        if(!err){
-            res.json(result);
-        } else{
-            res.send(result);
+router.post('/reservation_fin', function(req,res,next) {
+    //좌석 재활성화
+    let sql = "UPDATE seats SET seat_available=true WHERE seat_code=?"
+    let params = [req.timeSeatInfo.seat_code]
+    pool.query(sql, params, function(err,result,fields){
+        if(err){
+            res.json({result:"fail"})
+        }
+        else{
+            next();
         }
     })
+
+});
+router.post('/reservation_fin', function(req,res,){
+    //선호좌석 사용여부에 따른 분기점
+    if(req.body.isPrefer){
+        //Django 통신
+        API_Call().reservation(req.body.userid, req.timeSeatInfo.seat_code, req.body.rating, req.timeSeatInfo.end_date, req.density,function(err, result){
+            if(!err){
+                res.json(result);
+            } else{
+                res.send(result);
+            }
+        })
+    }
+    else{
+        res.json({result:"success"})
+    }
 });
 
 module.exports = router;
