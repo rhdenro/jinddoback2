@@ -63,7 +63,25 @@ function Extend(){
             </div>
             </div>):null}
             
-
+        {showExit?(<div className="exitarea">
+            <div className="Exit">
+                <h1> 종료 하시겠습니까? </h1>
+                <button className="open" onClick={togglePopupexit} value = 'false'> 
+                종료하기</button>
+                {showPopupExit ? (
+                            <div className="popup">
+                                <div className="popup_inner">
+                                    <br/>
+                                    <h2> 좌석 이용 종료!! </h2>
+                                    <Rating/>
+                                    <button className="close" onClick={togglePopupexit}>
+                                    제출하기
+                                    </button>
+                                </div>
+                                </div>
+                        ): null}
+                </div>
+                </div>):null}
             </div>
     );            
 } export default Extend;
