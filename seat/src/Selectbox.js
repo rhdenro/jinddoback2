@@ -10,6 +10,17 @@ function ComboBox(props) {
     props.onChange(event, textArea);
   }
 
-
+  return (
+    <Autocomplete
+      disablePortal
+      id="combo-box-demo"
+      options={selectfirstseat}
+      onChange = {onChange}
+      sx={{ width: 300 }}
+      renderInput={(params) => <TextField {...params} value={document.getElementById('conbo-box-demo')} label="우대인원" />}
+    />
+  );
 }
+export default ComboBox;
+
 
