@@ -100,5 +100,27 @@ export default function CustomizedTables() {
       setStates(tempStates);
     }
   }
-  
+  return (
+    <TableContainer component={Paper}>
+        <Header/>
+        <div className="arrangement">
+          <Selectbox onChange={(event)=> {setTextArea(event.target.innerText);}} />
+          <br/>
+          <Switchbox onChange={(event) => {onChange(event);}} value = { textArea } states = {states} seatInfo = { seatInfo }/>
+        </div>
+      <Table sx={{ minWidth: 1000 }} aria-label="customized table">  
+      
+        <TableHead>
+          <TableRow>
+            <StyledTableCell> 좌석 형태 </StyledTableCell>
+            <StyledTableCell align="right"> 층 수 </StyledTableCell>
+            <StyledTableCell align="right"> 좌석 번호 </StyledTableCell>
+            <StyledTableCell align="right"> 밀집도 </StyledTableCell>
+            <StyledTableCell align="right"> 예약 진행 </StyledTableCell>
+          </TableRow>
+        </TableHead>
+       
+      </Table>
+    </TableContainer>
+  );
 }
