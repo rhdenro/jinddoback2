@@ -71,3 +71,34 @@ function move(){
   window.location.href = "/Allseat"
 }
 
+export default function CustomizedTables() {
+  const [textArea, setTextArea] = useState("");
+  const [states,setStates] = useState([true, true, true]);
+  const [seatInfo, setSeatInfo] = useState();
+  const onChange = (event) => {
+    if(event.data !== undefined){
+      if(event.data.result){
+        setSeatInfo(event.data.result);
+      }
+      else{
+        setSeatInfo(event.data);
+      }
+    }
+    else if(event.currentTarget.id == "test"){
+      let tempStates = states;
+      tempStates[0] = !(tempStates[0]);
+      setStates(tempStates);
+    }
+    else if(event.currentTarget.id == "test2"){
+      let tempStates = states;
+      tempStates[1] = !(tempStates[1]);
+      setStates(tempStates);
+    }
+    else{
+      let tempStates = states;
+      tempStates[2] = !(tempStates[2]);
+      setStates(tempStates);
+    }
+  }
+  
+}
