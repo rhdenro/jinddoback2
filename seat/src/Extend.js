@@ -28,5 +28,19 @@ function Extend(){
         setShowPopup(event.target.value);
 
     };
-   
+    const togglePopupexit = (event) => {
+        /*axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db//users/getMyPrefer',{
+        userid: sessionStorage.getItem('userId'),
+        },{'Access-Contorl-Allow-Credentials': "true",
+        withCredentials: true})
+        .then(result => {
+        console.log(result);
+        setExit(result);
+         })*/
+        a=2;
+        setShowExtend(!(event.target.value));
+        setShowPopupExit(event.target.value);
+    }
+
+       
 } export default Extend;
