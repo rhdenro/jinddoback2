@@ -254,9 +254,9 @@ router.post('/seats/getSeats', function(req,res,next){
 
 /* 예약 갱신 -> 초기 3회 예약 판별*/
 router.post('/seats/reservation_con', function(req,res,next){
-    pool.query('SELECT count FROM reservation_log WHERE available = 1 AND seat_code=?', req.body.seat_code, function(err,rows,fields){
+    pool.query('SELECT count FROM reservation_log WHERE available = 1 AND reservation_user=?', req.body.userid, function(err,rows,fields){
         if(rows[0] == 2){
-            res.json({ result: "fail"})
+            res.json({ result: "예약 가능 횟수 초과"})
         }
         else{
             next();
@@ -264,6 +264,29 @@ router.post('/seats/reservation_con', function(req,res,next){
     })
 })
 
+router.post('/seats/reservation_con', function(req,res,next){
+    //예약 횟수 추가
+    pool.query('UPDATE reservation_log SET count = count + 1 WHERE available=1 AND reservation_user=?', req.body.userid, function(err,rows,fields){
+        if(err){
+            res.json({result: "쿼리문 오류"})
+        }
+        else{
+            next();
+        }
+    })
+})
+
+router.post('/seats/reservation_con', function(req,res,next){
+    //시간 연장
+    pool.query('UPDATE reservation_log SET end_time = DATE_ADD(end_time, INTERVAL 30 MINUTE) WHERE available=1 AND reservation_user=?', req.body.userid, function(err,rows,fields){
+        if(err){
+            res.json({result: "쿼리문 오류"});
+        }
+        else{
+            res.json({result: "연장 성공"});
+        }
+    })
+})
 /* 예약 갱신 -> 예약횟수 추가 */
 router.post('/seats/reservation_con', function(req,res,next){
     pool.query('UPDATE reservation_log SET count = count + 1 WHERE seat_code = ? AND available=1', req.body.seat_code, function(err, rows, fields){
@@ -327,30 +350,6 @@ router.post('/reservation', function(req,res){
         });
     }
 });
-
-
-/* 예약 취소 및 종료 -> Django 통신 요청부*/
-router.post('/seats/reservation_can', function(req,res,next){
-    pool.query('UPDATE seats SET seat_available=1 WHERE seat_code=?', req.body.seat_code, function(err,rows,fields){
-        if(err){
-            res.json({ result: "fail" });
-        }
-        else{
-            next();
-        }
-    })
-})
-
-router.post('/seats/reservation_can', function(req,res,next){
-    pool.query('UPDATE reservation_log SET available=0 WHERE seat_code=? AND available=1', req.body.seat_code, function(err,rows,fields){
-        if(err){
-            res.json({ result: "fail" });
-        }
-        else{
-            next();
-        }
-    })
-})
 
 //recommendation Server 통신
 //추천값 받아오기
