@@ -43,3 +43,31 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+function createData(name, style, height, day) {
+  return { name, style, height, day };
+}
+
+const rows = [
+  createData('조망형', 1, 12, 20211110),
+  createData('조망형', 1, 13, 20211115),
+  createData('창가형', 2, 3, 20211116),
+  createData('창가형', 2, 5, 20211126),
+  createData('pc형', 3, 15, 20211127),
+];
+
+const clickMe = (event) => {
+  window.location.href = "/home"
+  axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db/reservation',{
+  userid: sessionStorage.getItem('userId'),
+  seat_code: event.target.getAttribute('value')
+  },{'Access-Contorl-Allow-Credentials': "true",
+  withCredentials: true})
+  .then(result => {
+    return result;
+  })
+}
+
+function move(){
+  window.location.href = "/Allseat"
+}
+
