@@ -119,6 +119,28 @@ export default function CustomizedTables() {
             <StyledTableCell align="right"> 예약 진행 </StyledTableCell>
           </TableRow>
         </TableHead>
+        {seatInfo !== undefined?(
+          <TableBody>
+          {seatInfo.map((row) => (
+            
+            <StyledTableRow key={row.seatCode}>
+              <StyledTableCell component="th" scope="row">
+                {row.form+ " : " + row.sector}
+              </StyledTableCell>
+              <StyledTableCell align="right">{row.floor}</StyledTableCell>
+              {
+              Array.isArray(row.seatCode)?
+              row.seatCode.length == 2?
+                <StyledTableCell align="right">{row.seatCode[0].slice(3)+" , "+row.seatCode[1].slice(3)}</StyledTableCell>
+              :<StyledTableCell align="right">{row.seatCode[0].slice(3)+" , "+row.seatCode[1].slice(3)+' , '+row.seatCode[2].slice(3)}</StyledTableCell>
+              :<StyledTableCell align="right">{row.seatCode}</StyledTableCell>
+              }
+              <StyledTableCell align="right">{row.density}</StyledTableCell>
+              <StyledTableCell align="right"><button onClick={clickMe}><h4 value = {row.seatCode} >예약하기 </h4></button></StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>):null}
+        
        
       </Table>
     </TableContainer>
