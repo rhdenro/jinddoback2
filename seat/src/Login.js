@@ -30,7 +30,7 @@ function Login() {
                 if(result == 1){
                     document.location.href='/';
                 }
-            },80)
+            },400)
         })
     }
 	// 페이지 렌더링 후 가장 처음 호출되는 함수
