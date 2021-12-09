@@ -91,7 +91,12 @@ function CustomizedSwitches(props) {
         <AntSwitch id="test2" onChange = {props.onChange} defaultChecked inputProps={{ 'aria-label': 'ant design' }} />
         <Typography>On</Typography>
 
-       
+        <label> 콘센트 유무 </label>
+        <Typography>Off</Typography>
+        <AntSwitch id="test3" onChange = {props.onChange} defaultChecked inputProps={{ 'aria-label': 'ant design' }} />
+        <Typography>On</Typography>
+
+    
         
       </Stack>
       
