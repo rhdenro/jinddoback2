@@ -141,7 +141,14 @@ export default function CustomizedTables() {
           ))}
         </TableBody>):null}
         
-       
+        <br/>
+          <div className="more">
+            좌석 직접 선택하기
+            <br/>
+            <button className="button" onClick={move}>
+            전체 좌석보기
+          </button>
+       </div> 
       </Table>
     </TableContainer>
   );
