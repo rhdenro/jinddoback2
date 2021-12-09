@@ -24,8 +24,22 @@ function Rating() {
 
   };
 
-  
+  return (
+    <Wrap>
+      <RatingText><h1>평가하기</h1></RatingText>
+      <Stars>
+        {ARRAY.map((el, idx) => {
+          return (
+            <FaStar
+              key={idx}
+              size="50"
+              onClick={() => handleStarClick(el)}
+              className={clicked[el] && 'yellowStar'}
+            />
+          );
+        })}
+      </Stars>
+    </Wrap>
+  );
 }
-
-export default Rating;
 
