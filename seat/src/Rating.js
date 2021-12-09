@@ -43,3 +43,44 @@ function Rating() {
   );
 }
 
+export default Rating;
+
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  align-items: center;
+  margin-top: 10%;
+`;
+
+const RatingText = styled.div`
+  color: #F15F5F;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: ugro;
+  margin-left: center;
+`;
+
+const Stars = styled.div`
+  display: flex;
+  padding-top: 5px;
+  margin-bottom: 30px;
+
+
+  & svg {
+    color: gray;
+    cursor: pointer;
+  }
+
+  :hover svg {
+    color: #fcc419;
+  }
+
+  & svg:hover ~ svg {
+    color: gray;
+  }
+
+  .yellowStar {
+    color: #fcc419;
+  }`
+  ;
