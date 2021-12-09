@@ -3,3 +3,8 @@ node_modules
 
 #vscode setting disable
 .vscode
+
+venv
+node_modules
+.env
+/.idea
