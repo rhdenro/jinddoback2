@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    h2 #{subtitle}
+    script.
+        $.ajax({
+            type: 'GET',
+            url: '/db/seats/get',
+            data: {},
+            success: function(response){
+                for(let i=0; i <= response.length; i++) {
+                    let seat_area = document.createElement('p');
+                    let seat_area_text = document.createTextNode(response[i].seat_code);
+                    seat_area.appendChild(seat_area_text);
+                    document.body.appendChild(seat_area);
+                }
+            },
+            error: function(error){
+                throw(error);
+            }
+        })
+    h2 Collapse

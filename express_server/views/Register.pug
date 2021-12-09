@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    h1= title
+    h2 #{subtitle}
+    form(action='/db/register', method="post")
+        p
+            h4 사용자 이름
+            input(type="text", name="username", placeholder="이름", required)
+        p
+            h4 비밀번호
+            input(type="password", name="password", placeholder="비밀번호", required)
+        p
+            h4 비밀번호 확인
+            input(type="password", name="passwordconfirm", placeholder="비밀번호 확인", required)
+        p
+            h4 학번
+            input(type="text", name="student_no", placeholder="학번", required)
+        button(type="submit") 가입하기
