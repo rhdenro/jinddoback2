@@ -95,8 +95,12 @@ function CustomizedSwitches(props) {
         <Typography>Off</Typography>
         <AntSwitch id="test3" onChange = {props.onChange} defaultChecked inputProps={{ 'aria-label': 'ant design' }} />
         <Typography>On</Typography>
-
-    
+        
+        <input type="hidden" id="textArea" value={props.value} />
+        <div className="btn">
+          <button onClick = {(e) => {onClick(e, document.getElementById('textArea'))}}> 
+          <h4> 조회하기 </h4> </button> 
+        </div>
         
       </Stack>
       
