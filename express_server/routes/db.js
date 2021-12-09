@@ -233,13 +233,15 @@ router.post('/seats/reservation_con', function(req,res,next){
     });
 })
 
-/* create Reservaiton */
+/* create Reservation */
 router.post('/reservation', function(req,res){
     let now = new Date();
     let end = new Date();
     end.setMinutes(end.getMinutes() +30);
-    if(Array.isArray(req.body.seat_code)){
-        repeatQuery(req.body.seat_code, req.body.userid, now, end)
+    let seat_code = req.body.seat_code.split(',');
+    console.log(seat_code.length);
+    if(seat_code.length != 1){
+        repeatQuery(seat_code, req.body.userid, now, end)
             .then(result => {
                 res.json({result: "예약에 성공했습니다."});
             }).catch((err)=>{
@@ -270,16 +272,17 @@ router.post('/reservation', function(req,res){
         })
     };
     function query(seat_code,userid, now, end){
-        let params = [userid, seat_code, now, end, 0]
-        let sql = "Insert INTO reservation_log(reservation_user, seat_code, start_time, end_time, count) VALUES(?,?,?,?,?)";
-        pool.query(sql, params, function(err,result,fields){
-            if(err){
-                reject(err);
-            }
-            else{
-                resolve("success")
-            }
-        })
+        return new Promise(function(resolve,reject) {
+            let params = [userid, seat_code, now, end, 0]
+            let sql = "Insert INTO reservation_log(reservation_user, seat_code, start_time, end_time, count) VALUES(?,?,?,?,?)";
+            pool.query(sql, params, function (err, result, fields) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve("success")
+                }
+            })
+        });
     }
 });
 
