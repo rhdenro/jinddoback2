@@ -76,7 +76,22 @@ function CustomizedSwitches(props) {
     props.onChange(result);
   })
   }
- 
+  return (
+    <FormGroup>
+       
+        <Stack direction="row" spacing={1} alignItems="center" fontFamily="ugro">
+
+        <label> 가장자리 </label>
+        <Typography>Off</Typography>
+        <AntSwitch id="test" onChange = {props.onChange} defaultChecked inputProps={{ 'aria-label': 'ant design' }} />
+        <Typography>On</Typography>
+        
+        
+        
+      </Stack>
+      
+    </FormGroup>
+  );
 }
 
 export default CustomizedSwitches;
