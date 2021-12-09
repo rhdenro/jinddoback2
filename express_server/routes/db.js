@@ -393,8 +393,8 @@ router.post('/recommendation', function(req,res){
 //Django Server 2차 통신
 router.post('/reservation_fin', function(req,res,next){
     if (!(req.body.isPrefer)) {
-        let sql = 'INSERT INTO reservation_log(reservation_user, seat_code, start_time, end_time) VALUES(?,?,?,?);'
-        let params = [req.session.userId, req.seat_code, req.start_time, req.end_time]
+        let sql = 'UPDATE reseration_log SET available=false WHERE reservation_user=? AND available=true;'
+        let params = [req.body.userid]
         pool.query(sql, params, function (err, result, fields) {
             if (err) {
                 res.json({result: "fail"});
@@ -403,20 +403,34 @@ router.post('/reservation_fin', function(req,res,next){
             }
         });
     } else{
-        let sql = 'INSERT INTO reservation_log(reservation_user, seat_code, start_time, end_time) VALUES(?,?,?,?);'
-        let params = [req.session.userId, req.seat_code, req.start_time, req.end_time]
-        pool.query(sql, params, function (err, result, fields) {
-            if (err) {
+        let sql = "SELECT start_time, end_time, seat_code FROM reservation_log WHERE reservation_user=? AND available = true;"
+        let params = [req.body.userid]
+        pool.query(sql, params, function(err, result, fields){
+            if(err){
                 res.json({result: "fail"});
-            } else {
+''            }
+            else{
+                req.timeSeatInfo = result[0];
                 next();
             }
-        });
+        })
     }
 });
 
+router.post('/reservation_fin', function(req,res,next){
+    let sql = "UPDATE reseration_log SET available=false WHERE reservation_user=? AND available=true;"
+    pool.query(sql, req.body.userid, function(err,result,fields){
+        if(err){
+            res.json({result: "fail"})
+        }
+        else{
+            next();
+        }
+    })
+});
+
 router.post('/reservation_fin', function(req,res) {
-    API_Call().reservation(req.body.userId, req.body.seatCode, req.body.rating, req.body.end_date, req.density,function(err, result){
+    API_Call().reservation(req.body.userid, req.timeSeatInfo.seat_code, req.body.rating, req.timeSeatInfo.end_date, req.density,function(err, result){
         if(!err){
             res.json(result);
         } else{
