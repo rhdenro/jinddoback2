@@ -97,7 +97,22 @@ function Mypage() {
             <StyledTableCell align="right"> 평점 </StyledTableCell>
           </TableRow>
         </TableHead>
+        {seatInfo !== undefined?(
+          <TableBody>
+          {seatInfo.map((row) => (
+            <StyledTableRow key={row.name}>
+              <StyledTableCell component="th" scope="row">
+              {row.form+ " : " + row.sector}
+              </StyledTableCell>
+              <StyledTableCell align="right">{row.floor}</StyledTableCell>
+              <StyledTableCell align="right">{row.seatNum}</StyledTableCell>     
+              <StyledTableCell align="right">{row.date}</StyledTableCell>
+              <StyledTableCell align="right">{row.score}</StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>):null}
        
+        
       </Table>
     </TableContainer>
         
