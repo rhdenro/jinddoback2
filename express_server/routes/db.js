@@ -122,6 +122,20 @@ router.get('/seats/get', function (req, res, next) {
     })
 });
 
+//예약 기록 초기화
+router.post('/seats/setDefaultValue', function(req,res){
+    let sql = "UPDATE FROM preference_table SET score=2 WHERE reservation_user=?";
+    let params = [req.body.userid]
+    pool.query(sql, params, function(err,result,fields){
+        if(err){
+            console.log(err);
+            res.json({result: "예약 기록 초기화 실패"});
+        }
+        else{
+            res.json({result: "초기화 성공"});
+        }
+    })
+})
 /* 내 예약자리 알아오기 */
 router.post('/users/seat', function(req,res){
     pool.query('SELECT seat_code FROM reservation_log WHERE available = 1 AND reservation_user')
@@ -239,7 +253,6 @@ router.post('/reservation', function(req,res){
     let end = new Date();
     end.setMinutes(end.getMinutes() +30);
     let seat_code = req.body.seat_code.split(',');
-    console.log(seat_code.length);
     if(seat_code.length != 1){
         repeatQuery(seat_code, req.body.userid, now, end)
             .then(result => {
