@@ -164,9 +164,7 @@ function parsePreferLog(row){
     return new Promise(function(resolve,reject){
         let result = new Object();
         let seat_code = row.seat_code;
-        result.shape = "";
         result.floor = "";
-        result.seatNo = "";
         //층수 추출
         switch(seat_code[0]){
             case '1':
@@ -206,7 +204,7 @@ function parsePreferLog(row){
         }
         result.date = row.date;
         result.score = row.score;
-
+        resolve(result);
     })
 }
 

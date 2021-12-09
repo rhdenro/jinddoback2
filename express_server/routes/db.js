@@ -138,7 +138,7 @@ router.post('/seats/setDefaultValue', function(req,res,next){
 })
 
 router.post('/seats/setDefaultValue', function(req,res,next){
-    let sql = "SELECT * FROM preference_table WHERE reservation_user=?";
+    let sql = "SELECT seat_code, DATE_FORMAT(date, '%Y-%m-%d') AS date, score FROM preference_table WHERE reservation_user=?";
     let params = [req.body.userid]
     pool.query(sql, params, function(err,result,fields){
         if(err){
@@ -146,7 +146,10 @@ router.post('/seats/setDefaultValue', function(req,res,next){
             res.json({result: "후 조회 실패"});
         }
         else{
-
+            parseModule.repeatPreferLog(result)
+                .then(responses => {
+                    res.send(responses);
+                })
         }
     })
 })
