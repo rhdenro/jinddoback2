@@ -153,11 +153,23 @@ router.post('/seats/setDefaultValue', function(req,res,next){
         }
     })
 })
-/* 내 예약자리 알아오기 */
-router.post('/users/seat', function(req,res){
-    pool.query('SELECT seat_code FROM reservation_log WHERE available = 1 AND reservation_user')
+//예약 기록 얻어오기
+router.post('/users/getMyPrefer', function(req,res,next){
+    let sql = "SELECT seat_code, DATE_FORMAT(date, '%Y-%m-%d') AS date, score FROM preference_table WHERE reservation_user=?";
+    let params = [req.body.userid]
+    pool.query(sql, params, function(err,result,fields){
+        if(err){
+            console.log(err);
+            res.json({result: "후 조회 실패"});
+        }
+        else{
+            parseModule.repeatPreferLog(result)
+                .then(responses => {
+                    res.send(responses);
+                })
+        }
+    })
 })
-
 // 좌석코드 파싱
 router.post('/seats/getSeats', function(req,res,next){
     pool.query('SELECT seat_code from preference_table WHERE reservation_user = ?', req.body.userId, function(err,result,fields){
