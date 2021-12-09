@@ -19,7 +19,10 @@ function Layout(){
                     <Kategorie info="전체좌석보기" image={everyseat}/>
                     <Kategorie info="추천받기" image={recomendation}/>
                 </div>
-                
+                <div className="Layoutrow">
+                    <Kategorie info="연장하기 및 종료하기" image={time} />
+                    <Kategorie info="나의 이용기록" image={user}/>
+                </div>
             </div>
 
         </div>
