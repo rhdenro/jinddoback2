@@ -164,7 +164,6 @@ function parsePreferLog(row){
     return new Promise(function(resolve,reject){
         let result = new Object();
         let seat_code = row.seat_code;
-        result.floor = "";
         //층수 추출
         switch(seat_code[0]){
             case '1':
@@ -193,6 +192,21 @@ function parsePreferLog(row){
                 break;
             case 'N':
                 result.form = "노트북 전용";
+                break;
+        }
+        //섹터 분류
+        switch(seat_code[2]){
+            case 'A':
+                result.sector = "A섹터";
+                break;
+            case 'B':
+                result.sector = "B섹터";
+                break;
+            case 'C':
+                result.sector = "C섹터";
+                break;
+            case 'D':
+                result.sector = "D섹터";
                 break;
         }
         //좌석 번호
