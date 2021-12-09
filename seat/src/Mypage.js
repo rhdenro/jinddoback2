@@ -82,7 +82,26 @@ function Mypage() {
         setSeatInfo(result.data);
       })
       }
-    
+    return(
+        <TableContainer component={Paper} onLoad = {onLoad}>
+        <Header/>
+      
+      <Table sx={{ minWidth: 1000 }} aria-label="customized table">  
+      
+        <TableHead>
+          <TableRow>
+            <StyledTableCell> 이전 사용 좌석 형태 </StyledTableCell>
+            <StyledTableCell align="right"> 층 수 </StyledTableCell>
+            <StyledTableCell align="right"> 좌석 번호 </StyledTableCell>
+            <StyledTableCell align="right">이용 날짜</StyledTableCell>
+            <StyledTableCell align="right"> 평점 </StyledTableCell>
+          </TableRow>
+        </TableHead>
+       
+      </Table>
+    </TableContainer>
+        
+    );
 
 }
 export default Mypage;
