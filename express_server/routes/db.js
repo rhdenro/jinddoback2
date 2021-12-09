@@ -255,7 +255,7 @@ router.post('/seats/getSeats', function(req,res,next){
 /* 예약 갱신 -> 초기 3회 예약 판별*/
 router.post('/seats/reservation_con', function(req,res,next){
     pool.query('SELECT count FROM reservation_log WHERE available = 1 AND reservation_user=?', req.body.userid, function(err,rows,fields){
-        if(rows[0] == 2){
+        if(rows[0].count == 2){
             res.json({ result: "예약 가능 횟수 초과"})
         }
         else{
@@ -299,16 +299,17 @@ router.post('/seats/reservation_con', function(req,res,next){
     });
 })
 
-/* create Reservation */
-router.post('/reservation', function(req,res){
+// create Reservation
+router.post('/reservation', function(req,res,next){
     let now = new Date();
     let end = new Date();
     end.setMinutes(end.getMinutes() +30);
-    let seat_code = req.body.seat_code.split(',');
-    if(seat_code.length != 1){
-        repeatQuery(seat_code, req.body.userid, now, end)
+    req.seat_code = req.body.seat_code.split(',');
+
+    if(req.seat_code.length != 1){
+        repeatQuery(req.seat_code, req.body.userid, now, end)
             .then(result => {
-                res.json({result: "예약에 성공했습니다."});
+                next();
             }).catch((err)=>{
                 console.error(err);
         })
@@ -320,7 +321,7 @@ router.post('/reservation', function(req,res){
                 console.error(err);
                 res.json({result: "예약 실패"});
             } else {
-                res.json({result: "예약에 성공했습니다."});
+                next();
             }
         })
     }
@@ -345,6 +346,54 @@ router.post('/reservation', function(req,res){
                     reject(err);
                 } else {
                     resolve("success")
+                }
+            })
+        });
+    }
+});
+
+router.post('/reservation', function(req,res){
+
+    if(req.seat_code.length != 1){
+        repeatQuery1(req.seat_code)
+            .then(result => {
+                res.json({result: "success"});
+            }).catch((err)=>{
+            res.json({result: "fail"});
+        })
+    } else {
+        let sql = "UPDATE seats SET seat_available=false WHERE seat_code=?";
+        let params = [req.body.seat_code]
+        pool.query(sql, params, function (err, result, fields) {
+            if (err) {
+                console.error(err);
+                res.json({result: "예약 실패"});
+            } else {
+                res.json({result: "success"});
+            }
+        })
+    }
+    function repeatQuery1(Array) {
+        return new Promise(async function (resolve, reject) {
+            const promises = Array.map((row) => query1(row));
+            await Promise.all(promises)
+                .then(responses => {
+                    resolve(responses);
+                })
+                .catch(error => {
+                    reject(error);
+                })
+        })
+    };
+    function query1(seat_code){
+        return new Promise(function(resolve,reject) {
+            let sql = "UPDATE seats SET seat_available=false WHERE seat_code=?";
+            let params = [seat_code]
+            pool.query(sql, params, function (err, result, fields) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve("success");
                 }
             })
         });
@@ -396,6 +445,7 @@ router.post('/reservation_fin', function(req,res,next){
     let params = [req.body.userid]
     pool.query(sql, params, function(err, result, fields){
         if(err){
+            console.error(err);
             res.json({result: "fail"});
         }
         else{
@@ -407,9 +457,10 @@ router.post('/reservation_fin', function(req,res,next){
 
 router.post('/reservation_fin', function(req,res,next){
     //예약기록에서 예약기록 비활성화
-    let sql = "UPDATE reseration_log SET available=false WHERE reservation_user=? AND available=true;"
+    let sql = "UPDATE reservation_log SET available=false WHERE reservation_user=? AND available=true;"
     pool.query(sql, req.body.userid, function(err,result,fields){
         if(err){
+            console.error(err);
             res.json({result: "fail"})
         }
         else{
@@ -424,6 +475,7 @@ router.post('/reservation_fin', function(req,res,next) {
     let params = [req.timeSeatInfo.seat_code]
     pool.query(sql, params, function(err,result,fields){
         if(err){
+            console.error(err);
             res.json({result:"fail"})
         }
         else{
@@ -440,6 +492,7 @@ router.post('/reservation_fin', function(req,res,){
             if(!err){
                 res.json(result);
             } else{
+                console.log(result);
                 res.send(result);
             }
         })
