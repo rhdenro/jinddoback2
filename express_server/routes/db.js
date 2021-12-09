@@ -287,6 +287,7 @@ router.post('/seats/reservation_con', function(req,res,next){
         }
     })
 })
+
 /* 예약 갱신 -> 예약횟수 추가 */
 router.post('/seats/reservation_con', function(req,res,next){
     pool.query('UPDATE reservation_log SET count = count + 1 WHERE seat_code = ? AND available=1', req.body.seat_code, function(err, rows, fields){
@@ -299,13 +300,62 @@ router.post('/seats/reservation_con', function(req,res,next){
     });
 })
 
+//예약 중복확인
+router.post('/reservation', async function(req,res,next){
+    req.seat_code = req.body.seat_code.split(',');
+    if(req.seat_code.length != 1){
+        repeatQuery2(req.seat_code)
+            .then(result => {
+                next();
+            })
+            .catch(result => {
+                res.json({result: "이미 예약중인 좌석입니다."});
+            })
+    } else {
+        let params = [req.seat_code[0]]
+        let sql = "SELECT COUNT(*) FROM reservation_log WHERE seat_code = ?";
+        pool.query(sql, params, function (err, result, fields) {
+            if (result) {
+                console.error(err);
+                res.json({result: "이미 예약중인 좌석입니다."});
+            } else {
+                next();
+            }
+        })
+    }
+    function repeatQuery2(Array, userid, now, end) {
+        return new Promise(async function (resolve, reject) {
+            const promises = Array.map((row) => query2(row));
+            await Promise.all(promises)
+                .then(responses => {
+                    resolve(responses);
+                })
+                .catch(error => {
+                    reject(error);
+                })
+        })
+    };
+    function query2(seat_code){
+        return new Promise(function(resolve,reject) {
+            let params = [seat_code]
+            let sql = "SELECT COUNT(*) FROM reservation_log WHERE seat_code = ?";
+            pool.query(sql, params, function (err, result, fields) {
+                if (result) {
+                    reject("중복된 예약이 있습니다.")
+                } else {
+                    resolve("중복 없음");
+                }
+            })
+        });
+    }
+});
+
 // create Reservation
 router.post('/reservation', function(req,res,next){
     let now = new Date();
     let end = new Date();
     end.setMinutes(end.getMinutes() +30);
     req.seat_code = req.body.seat_code.split(',');
-
     if(req.seat_code.length != 1){
         repeatQuery(req.seat_code, req.body.userid, now, end)
             .then(result => {
@@ -350,10 +400,15 @@ router.post('/reservation', function(req,res,next){
             })
         });
     }
+    function check(){
+        return new Promise(function(resolve, reject){
+            let params = []
+        })
+    }
 });
 
+//좌석 비활성화
 router.post('/reservation', function(req,res){
-
     if(req.seat_code.length != 1){
         repeatQuery1(req.seat_code)
             .then(result => {
