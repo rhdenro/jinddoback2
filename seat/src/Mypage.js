@@ -41,4 +41,36 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
   }));
   
+  function createData(name, style, height, day, rate) {
+    return { name, style, height, day, rate };
+  }
   
+  const rows = [
+    createData('조망형', 1, 12, 20211110, 5),
+    createData('조망형', 1, 13, 20211115, 5),
+    createData('창가형', 2, 3, 20211116, 5),
+    createData('창가형', 2, 5, 20211126, 4),
+    createData('pc형', 3, 15, 20211127, 4),
+  ];
+  
+  
+/*const onSubmit = (event)=>{
+    event.preventDefault()
+    return alert("좌석 이용기록 초기화 완료")
+}*/
+function Mypage() {
+  const [seatInfo, setSeatInfo] = useState();
+  //초기화
+  const clickMe =() => {
+    axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db/seats/setDefaultValue',{
+      userid: sessionStorage.getItem('userId'),
+    },{'Access-Contorl-Allow-Credentials': "true",
+    withCredentials: true})
+    .then(result => {
+      setSeatInfo(result.data);
+    })
+    }
+
+
+}
+export default Mypage;
