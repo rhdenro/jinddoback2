@@ -21,7 +21,18 @@ function Kategorie({ info, image }){
  
     }
 
-   
+    return (
+        <div className="kategorie">
+            <div className="info"> 
+                <p className="everyseat">
+                    <h1> { info } </h1>
+                    
+                </p>                                                         
+            </div>
+            <img className="everyseatimage" src={image} alt="everyseat"/> 
+            <button className="click" onClick={clickMe}> 누르세요 </button>
+        </div>
+    );
 }
 export default Kategorie;
 
