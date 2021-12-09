@@ -42,5 +42,28 @@ function Extend(){
         setShowPopupExit(event.target.value);
     }
 
-       
+    return(
+        <div className="whole">
+        {showExtend?(<div className="extendarea">
+            <div className="Extend">
+                <h1> 연장 하시겠습니까? </h1>
+                <button className="open" onClick={togglePopupextend} value = 'false'> 
+                연장하기</button>
+                {showPopup ? (
+                    <div className="popup">
+                        <div className="popup_inner">
+                            <br/>
+                            <h2> 해당 좌석 2시간 연장 완료!! </h2>
+                            <button className="close" onClick={togglePopupextend}>
+                             메시지 닫기
+                            </button>
+                        </div>
+                        </div>
+                ): null}
+            </div>
+            </div>):null}
+            
+
+            </div>
+    );            
 } export default Extend;
