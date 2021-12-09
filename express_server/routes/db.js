@@ -123,16 +123,30 @@ router.get('/seats/get', function (req, res, next) {
 });
 
 //예약 기록 초기화
-router.post('/seats/setDefaultValue', function(req,res){
-    let sql = "UPDATE FROM preference_table SET score=2 WHERE reservation_user=?";
-    let params = [req.body.userid]
+router.post('/seats/setDefaultValue', function(req,res,next){
+    let sql = "UPDATE preference_table SET score=2 WHERE reservation_user=?";
+    let params = [req.body.userid];
     pool.query(sql, params, function(err,result,fields){
         if(err){
             console.log(err);
             res.json({result: "예약 기록 초기화 실패"});
         }
         else{
-            res.json({result: "초기화 성공"});
+            next();
+        }
+    })
+})
+
+router.post('/seats/setDefaultValue', function(req,res,next){
+    let sql = "SELECT * FROM preference_table WHERE reservation_user=?";
+    let params = [req.body.userid]
+    pool.query(sql, params, function(err,result,fields){
+        if(err){
+            console.log(err);
+            res.json({result: "후 조회 실패"});
+        }
+        else{
+
         }
     })
 })
