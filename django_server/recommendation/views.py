@@ -14,14 +14,13 @@ def recommend(request):
         connection.commit()
         connection.close()
         sqlData = json.loads(request.body)
-
         df = pd.DataFrame(seats,
                           columns=['seat_available', 'pc_available', 'concent_available', 'seat_code', 'preferences',
                                    'edge_seat'])
-
+        df['point'] = 0
         fre = sqlData['isPrefer']
         if (fre == 1):
-            p_num = sqlData['person']
+            p_num = int(sqlData['person'][0])
             flag = df['preferences'] == p_num
             df = df[flag]
             if p_num == 2:
@@ -39,7 +38,7 @@ def recommend(request):
                     if (df['seat_code'].iloc[i]) in start:
                         flag1 = df['seat_code'] == df['seat_code'].iloc[i][0:3] + str(int(df['seat_code'].iloc[i][3:]) + 1)
                         flag2 = df['seat_code'] == df['seat_code'].iloc[i][0:3] + str(int(df['seat_code'].iloc[i][3:]) + 2)
-                        if not df[flag1].empty and not df[flag2].empty:
+                        if not df[flag1].empty and not df[flag2].empty and not len(result)>14:
                             result.append([df['seat_code'].iloc[i], df[flag1]['seat_code'].iloc[0], df[flag2]['seat_code'].iloc[0]])
         else:
             test_df = pd.DataFrame(sqlData['preferInfo'],
@@ -55,33 +54,47 @@ def recommend(request):
                 df = df[flag]
                 flag = test_df['score'] == 5
                 tmp_test = test_df[flag]
-                print(tmp_test)
                 for i in tmp_test['seat_code']:
                     flag = df['seat_code'] == i
                     if df[flag].empty: continue
-                    result.append(df[flag].iloc[0]['seat_code'])
+                    temp=[]
+                    temp.append(df[flag].iloc[0]['seat_code'])
+                    temp.append(0)
+                    result.append(temp)
                     idx_df = df[flag].index
                     df = df.drop(idx_df)
-                while (len(result) <= 15):
+                while (len(result) < 15):
                     if df.empty: break
-                    result.append(df.iloc[0]['seat_code'])
+                    temp=[]
+                    temp.append(df.iloc[0]['seat_code'])
+                    temp.append(0)
+                    result.append(temp)
                     df = df.drop(df.index[0])
             elif (con == 1):
                 flag = df['concent_available'] == 1
                 df = df[flag]
+                flag = df['pc_available'] == 0
+                df=df[flag]
+                fdf = fretend(df)
                 flag = test_df['score'] == 5
                 tmp_test = test_df[flag]
                 for i in tmp_test['seat_code']:
                     flag = df['seat_code'] == i
                     if not df[flag].empty :
-                        result.append(df[flag].iloc[0]['seat_code'])
+                        temp=[]
+                        temp.append(df[flag].iloc[0]['seat_code'])
+                        temp.append(fdf['3NA'])
+                        result.append(temp)
                         idx_df = df[flag].index
                         df = df.drop(idx_df)
                 if edge == 1:
                     flag = df['edge_seat'] == 1
                     count=df[flag].shape[0]
                     while count > 0 and len(result) < 15:
-                        result.append(df[flag].iloc[0]['seat_code'])
+                        temp=[]
+                        temp.append(df[flag].iloc[0]['seat_code'])
+                        temp.append(fdf['3NA'])
+                        result.append(temp)
                         idx_df = df[flag].index[0]
                         df = df.drop(idx_df)
                         count -= 1
@@ -90,11 +103,9 @@ def recommend(request):
                     result.append(df.iloc[0]['seat_code'])
                     df = df.drop(df.index[0])
             else:
-                df['point'] = 0
                 flag = df['pc_available'] == 0
                 df = df[flag]
                 fdf = fretend(df)
-                print(fdf)
                 flag = test_df['score'] == 5
                 if not test_df[flag].empty:
                     for i in test_df[flag]['seat_code']:
@@ -126,12 +137,12 @@ def recommend(request):
                             if not df[flag].empty:
                                 df.iloc[df[flag].index - 1, 6] += 2
                 if edge == 1:
+                    print('in edge')
                     flag = df['edge_seat'] == 1
                     k= df[flag].shape[0]-1
                     for i in range(k):
                         idx=df[flag].index[i]
                         df.loc[idx, 'point'] +=6
-
                 flag=test_df['score'] >= 4
                 floor=[]
                 for i in test_df[flag]['seat_code']:
@@ -163,20 +174,30 @@ def recommend(request):
                 elif tmp[1] == 'N':
                     if S_point<0:continue
                     df.iloc[i, 6] += S_point-1
-            df=df.sort_values(by=['point'], axis=0, ascending=False)
+            df = df.sort_values(by=['point'], axis=0, ascending=False)
             result_count = 0
-
+            flag = df['preferences'] != 0
+            pre_temp = df[flag]
+            flag = df['preferences'] == 0
+            df = df[flag]
             while (len(result) < 15):
-                temp=result
-                if df.shape[0]==0:
-                    print('not enough seat')
-                    break
+                temp = result
+                if df.shape[0] == 0:
+                    tmp_density = fdf[pre_temp.iloc[0]['seat_code'][0:3]]
+                    temp_list = []
+                    temp_list.append(pre_temp.iloc[0]['seat_code'])
+                    temp_list.append(tmp_density)
+                    result.append(temp_list)
+                    flag = pre_temp['seat_code'] == pre_temp.iloc[0, 3]
+                    pre_temp = pre_temp.drop(pre_temp[flag].index)
+                    if pre_temp.shape[0] == 0:
+                        break
                 for i in temp:
-                    if i[0:3] == df.iloc[0,3][0:3]:
+                    if i[0][0:3] == df.iloc[0, 3][0:3]:
                         result_count +=1
                 if result_count == 2:
                     result_count = 0
-                    flag = df['seat_code'] == df.iloc[0, 3]
+                    flag = df['seat_code'] == df.iloc[0]['seat_code']
                     df = df.drop(df[flag].index)
                 else:
                     result_count = 0
@@ -195,7 +216,7 @@ def recommend(request):
         print("Error: ",ex)
         print("Failed selecting")
 
-
+    print(result)
     return JsonResponse(result, safe=False)
 
 
@@ -217,7 +238,7 @@ def reservation(request):
     try:
         sqldata = json.loads(request.body)
         seat_code = sqldata["seat_code"]
-        if seat_code[1] == 'P' or seat_code[1] == 'N':
+        if seat_code[1] == 'P' :
             return JsonResponse(200)
         userid = sqldata["userid"]
         date = sqldata["end_date"]
