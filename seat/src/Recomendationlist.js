@@ -15,3 +15,31 @@ import Reservation from './Reservation.js';
 import axios from 'axios';
 
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#F15F5F",
+    color: theme.palette.common.white,
+    textAlign: "center",
+    fontFamily: "ugro",
+    fontSize: 23
+    
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 20,
+    textAlign: "center",
+    fontFamily: "ugro"
+    
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+    
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
