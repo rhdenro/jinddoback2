@@ -1,36 +1,46 @@
-//import Login from './Login.js';
-import React , { Component } from "react";
+import React , { Components } from "react";
 import Header from './Header.js';
+import Layout from './Layout.js';
 import "./App.css";
 import Main from "./main.js"
 import Login from "./Login.js";
+import Logout from "./Logout.js";
 import Home from "./Home.js";
+import Reservation from "./Reservation.js";
 import Register from "./Register.js";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Recomendationlist from "./Recomendationlist.js";
+import Extend from "./Extend.js";
+import Mypage from "./Mypage.js";
+import Allseat from "./Allseat.js";
+import Rating from "./Rating.js";
+import { BrowserRouter , Route, Router, Routes } from "react-router-dom";
 
-/*class App extends Component {
-  render() {
-      return (
-          <div>
-              <Header/>
-              {this.props.children}
-          </div>
-      );
-  }
-}*/
 
 function App(){
   return(
-    <div className = 'App'>
-      <Routes>
-        <Route exact path="/" element={<Main/>}/>
-        <Route path = "/home" element={<Home/>}/>
-        <Route path="/header" element={<Header/>} />
-        <Route path="/login" element={<Login />} /> 
-        <Route path="/Register" element={<Register />} />  
-      </Routes>   
-    </div>
+      <div className = 'App'>
+    
+         <Routes>
+           <Route exact path="/" element={<Main/>}/>
+           <Route path = "/home" element={<Layout/>}/>
+           <Route path="/header" element={<Header/>}/>
+           <Route path="/login" element={<Login />}/>   
+           <Route path="/register" element={<Register/>}/>
+           <Route path="/logout" element = {<Logout />}/> 
+           <Route path="/mypage" element = {<Mypage/>}/>
+           <Route path="/recomendationlist" element = {<Recomendationlist/>}/>
+           <Route path="/extend" element = {<Extend/>}/>
+           <Route path="/allseat" element = {<Allseat/>}/>
+           <Route path="/Reservation" element = {<Reservation/>}/>
+           <Route path="/Rating" element={<Rating/>}/>
+         </Routes>
+
+   
+       
+      </div>
+ 
   );
 }
+
 
 export default App;
