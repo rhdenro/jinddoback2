@@ -70,7 +70,19 @@ function Mypage() {
       setSeatInfo(result.data);
     })
     }
-
+    //초기 로딩
+    const onLoad =() => {
+      console.log("IN")
+      axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db//users/getMyPrefer',{
+        userid: sessionStorage.getItem('userId'),
+      },{'Access-Contorl-Allow-Credentials': "true",
+      withCredentials: true})
+      .then(result => {
+        console.log(result);
+        setSeatInfo(result.data);
+      })
+      }
+    
 
 }
 export default Mypage;
