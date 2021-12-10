@@ -11,36 +11,45 @@ function Extend(){
     const [showPopupExit, setShowPopupExit] = useState(false);
     const [showExtend, setShowExtend] = useState(true);
     const [showExit, setShowExit] = useState(true);
-    //const [extend, setExtend] = useState();
-    //const [exit, setExit] = useState();
+    const [extend, setExtend] = useState();
+    const [exit, setExit] = useState();
+    const [clicked, setClicked] = useState([false, false, false, false, false]);
 
     const togglePopupextend = (event) => {
-        /*axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db//users/getMyPrefer',{
+        axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db/seats/reservation_con',{
         userid: sessionStorage.getItem('userId'),
         },{'Access-Contorl-Allow-Credentials': "true",
         withCredentials: true})
         .then(result => {
         console.log(result);
         setExtend(result);
-        }) */
         a=1;
         setShowExit(!(event.target.value));
         setShowPopup(event.target.value);
-
+        })  
     };
     const togglePopupexit = (event) => {
-        /*axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db//users/getMyPrefer',{
-        userid: sessionStorage.getItem('userId'),
-        },{'Access-Contorl-Allow-Credentials': "true",
-        withCredentials: true})
-        .then(result => {
-        console.log(result);
-        setExit(result);
-         })*/
         a=2;
         setShowExtend(!(event.target.value));
         setShowPopupExit(event.target.value);
-    }
+    };
+    function move1(){
+        window.location.href = "/home"
+      }
+    function move2(){
+        let rating = clicked.filter(Boolean).length;
+        alert(rating);
+        axios.post(process.env.REACT_APP_SERVER_URL+":"+process.env.REACT_APP_SERVER_PORT+'/db/seats/reservation_fin',{
+            userid: sessionStorage.getItem('userId'),
+            rating: rating
+            },{'Access-Contorl-Allow-Credentials': "true",
+            withCredentials: true})
+            .then(result => {
+            console.log(result);
+            setExit(result);
+            window.location.href = "/home"
+            })
+      }
 
     return(
         <div className="whole">
@@ -54,7 +63,7 @@ function Extend(){
                         <div className="popup_inner">
                             <br/>
                             <h2> 해당 좌석 2시간 연장 완료!! </h2>
-                            <button className="close" onClick={togglePopupextend}>
+                            <button className="close" onClick={move1}>
                              메시지 닫기
                             </button>
                         </div>
@@ -73,8 +82,8 @@ function Extend(){
                                 <div className="popup_inner">
                                     <br/>
                                     <h2> 좌석 이용 종료!! </h2>
-                                    <Rating/>
-                                    <button className="close" onClick={togglePopupexit}>
+                                    <Rating onChange={(event)=>{setClicked(event);}}/>
+                                    <button className="close" onClick={move2}>
                                     제출하기
                                     </button>
                                 </div>
