@@ -60,7 +60,7 @@ router.post('/register', function (req, res) {
     function query(Date, seat_no, student_no){
         return new Promise(function(resolve,reject){
             let params = [student_no, seat_no, Date, 2, 0]
-            let sql = "INSERT INTO preference_table(reservation_user, seat_code, date, score, density) VALUES(?, ?, ?, ?, ?);";
+            let sql = "INSERT INTO preference_table(reservation_user, seat_code, date, score) VALUES(?, ?, ?, ?);";
             pool.query(sql, params, function(err,result,fields){
                 if(err){
                     reject(err);
@@ -288,18 +288,6 @@ router.post('/seats/reservation_con', function(req,res,next){
     })
 })
 
-/* 예약 갱신 -> 예약횟수 추가 */
-router.post('/seats/reservation_con', function(req,res,next){
-    pool.query('UPDATE reservation_log SET count = count + 1 WHERE seat_code = ? AND available=1', req.body.seat_code, function(err, rows, fields){
-       if(err){
-           res.json({ result: "fail" });
-       }
-       else{
-           res.json({ result: "success" });
-       }
-    });
-})
-
 //예약 중복확인
 router.post('/reservation', async function(req,res,next){
     req.seat_code = req.body.seat_code.split(',');
@@ -313,9 +301,9 @@ router.post('/reservation', async function(req,res,next){
             })
     } else {
         let params = [req.seat_code[0]]
-        let sql = "SELECT COUNT(*) FROM reservation_log WHERE seat_code = ?";
+        let sql = "SELECT COUNT(*) AS count FROM reservation_log WHERE seat_code = ? AND available=true";
         pool.query(sql, params, function (err, result, fields) {
-            if (result) {
+            if (result[0].count) {
                 console.error(err);
                 res.json({result: "이미 예약중인 좌석입니다."});
             } else {
@@ -323,7 +311,7 @@ router.post('/reservation', async function(req,res,next){
             }
         })
     }
-    function repeatQuery2(Array, userid, now, end) {
+    function repeatQuery2(Array) {
         return new Promise(async function (resolve, reject) {
             const promises = Array.map((row) => query2(row));
             await Promise.all(promises)
@@ -338,9 +326,9 @@ router.post('/reservation', async function(req,res,next){
     function query2(seat_code){
         return new Promise(function(resolve,reject) {
             let params = [seat_code]
-            let sql = "SELECT COUNT(*) FROM reservation_log WHERE seat_code = ?";
+            let sql = "SELECT COUNT(*) AS count FROM reservation_log WHERE seat_code = ? AND available=true";
             pool.query(sql, params, function (err, result, fields) {
-                if (result) {
+                if (result[0].count) {
                     reject("중복된 예약이 있습니다.")
                 } else {
                     resolve("중복 없음");
@@ -399,11 +387,6 @@ router.post('/reservation', function(req,res,next){
                 }
             })
         });
-    }
-    function check(){
-        return new Promise(function(resolve, reject){
-            let params = []
-        })
     }
 });
 
@@ -494,9 +477,9 @@ router.post('/recommendation', function(req,res){
 });
 
 //예약 종료
-router.post('/reservation_fin', function(req,res,next){
+router.post('/seats/reservation_fin', function(req,res,next){
     //시작 시간, 종료 시간, 좌석 코드 얻어오기
-    let sql = "SELECT start_time, end_time, seat_code FROM reservation_log WHERE reservation_user=? AND available = true;"
+    let sql = "SELECT start_time, date_format(end_time, '%Y-%m-%d %H:%i:%S') AS end_time , seat_code FROM reservation_log WHERE reservation_user=? AND available = true;"
     let params = [req.body.userid]
     pool.query(sql, params, function(err, result, fields){
         if(err){
@@ -510,7 +493,7 @@ router.post('/reservation_fin', function(req,res,next){
     });
 })
 
-router.post('/reservation_fin', function(req,res,next){
+router.post('/seats/reservation_fin', function(req,res,next){
     //예약기록에서 예약기록 비활성화
     let sql = "UPDATE reservation_log SET available=false WHERE reservation_user=? AND available=true;"
     pool.query(sql, req.body.userid, function(err,result,fields){
@@ -524,7 +507,7 @@ router.post('/reservation_fin', function(req,res,next){
     })
 });
 
-router.post('/reservation_fin', function(req,res,next) {
+router.post('/seats/reservation_fin', function(req,res,next) {
     //좌석 재활성화
     let sql = "UPDATE seats SET seat_available=true WHERE seat_code=?"
     let params = [req.timeSeatInfo.seat_code]
@@ -539,11 +522,12 @@ router.post('/reservation_fin', function(req,res,next) {
     })
 
 });
-router.post('/reservation_fin', function(req,res,){
+router.post('/seats/reservation_fin', function(req,res,){
     //선호좌석 사용여부에 따른 분기점
-    if(req.body.isPrefer){
+    console.log(req.body.rating);
+    if(!(req.body.isPrefer)){
         //Django 통신
-        API_Call().reservation(req.body.userid, req.timeSeatInfo.seat_code, req.body.rating, req.timeSeatInfo.end_date, req.density,function(err, result){
+        API_Call().reservation(req.body.userid, req.timeSeatInfo.seat_code, req.body.rating, req.timeSeatInfo.end_time,function(err, result){
             if(!err){
                 res.json(result);
             } else{

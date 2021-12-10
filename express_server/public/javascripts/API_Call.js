@@ -31,15 +31,15 @@ module.exports = function API_Call(){
                     statusCodeHandler(res.statusCode, callback, result);
                 });
             },
-            reservation: function(user_id, seatCode, rating, end_date, density, callback){
+            reservation: function(user_id, seatCode, rating, end_date, callback){
                 OPTIONS.url = process.env.Django_URL + "/reservation/";
                 OPTIONS.body = JSON.stringify({
                     "user_id": user_id,
                     "seatCode": seatCode,
                     "rating": rating,
-                    "end_date": end_date,
-                    "density": density
+                    "end_date": end_date
                 });
+                console.log(OPTIONS.body);
                 request.post(OPTIONS, function(err, res, result){
                     statusCodeHandler(res.statusCode, callback, result);
                 });
