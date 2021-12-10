@@ -4,15 +4,16 @@ import styled from 'styled-components';
 
 const ARRAY = [0, 1, 2, 3, 4];
 
-function Rating() {
+function Rating(props) {
   const [clicked, setClicked] = useState([false, false, false, false, false]);
 
   const handleStarClick = index => {
-    let clickStates = [...clicked];
+    let clickStates = [...clicked]
     for (let i = 0; i < 5; i++) {
       clickStates[i] = i <= index ? true : false;
     }
     setClicked(clickStates);
+    props.onChange(clickStates);
   };
 
   useEffect(() => {
@@ -21,7 +22,7 @@ function Rating() {
 
   const sendReview = () => {
     let score = clicked.filter(Boolean).length;
-
+    return score;
   };
 
   return (
@@ -32,6 +33,7 @@ function Rating() {
           return (
             <FaStar
               key={idx}
+              value={idx}
               size="50"
               onClick={() => handleStarClick(el)}
               className={clicked[el] && 'yellowStar'}
