@@ -1,0 +1,26 @@
+.kategorie {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 10px;
+    padding: 20px;
+    width: 30%;
+    max-height: 2000px;
+    min-width: 45%;
+    background-color: white;
+    z-index: 1;
+    font-family: "ugro";
+}
+
+.kategorie > img {
+    max-height: 100px;
+    width: 100%;
+    object-fit: contain;
+    margin-bottom: 15px;    
+
+}
+
+.click{
+    font-family: "ugro";
+}
