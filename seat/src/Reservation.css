@@ -1,0 +1,29 @@
+.Reservation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    flex-Direction: column;
+    font-Family: "ugro";
+    background-color: "#FBF5EF";
+    
+}
+.popup {
+    margin-bottom: center;
+    justify-content: center;
+    align-items: center;
+}
+.abs {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)
+}
+.popup_inner{
+    margin-bottom: center;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
