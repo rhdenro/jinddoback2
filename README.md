@@ -13,6 +13,10 @@
   데이터베이스는 MySQL을 사용합니다.<br/>
   분류기는 Python을 기반으로 제작되었습니다.<br/>
 </div>
+<div>
+  분류기는 python3 기반으로 구성되어 있고, python pandas로 데이터 구조화 및 추천 알고리즘에 따른 구현이 이루어져 있습니다.<br/>
+  MySQL에서 정보를 가져와 Content-Based-Fitering방식을 채용한 모듈입니다.<br/>
+</div>
 
 # Server
 
@@ -97,4 +101,5 @@
 
 # 기타 사항
 <h4>개발자 Email : kis89576@gmail.com(SERVER)</h4>
+<h4>개발자 Email : fkdleon3@naver.com(MODEL)</h4>
 <h4> LICENSE : MIT LICENSE </h4>
