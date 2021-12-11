@@ -1,6 +1,6 @@
 # 도서관 좌석추천 프로젝트
 
-# About
+## About
 <h4>여러분들은 도서관을 이용하다가 본인이 좋아하지도 않은 좌석에 앉아본 경험이 있으신가요?</h4>
 <div>
   저희는 이러한 상황을 개선하기 위해, 자체적인 도서관 좌석 추천 시스템을 제작하였습니다.<br/>
@@ -16,17 +16,17 @@
 
 # Server
 
-# Dependencies 
+## Dependencies 
 
-# OS 및 프로그램 버전(TEST완료된 버전입니다.)
+### OS 및 프로그램 버전(TEST완료된 버전입니다.)
  * OS - Windows 10 Edu 21H2<br>
  * Node.js - 16.13.1 LTS<br>
  * MySQL - 8.0.21<br>
  * Django - 3.2 <br>
  * Python - 3.8.11<br>
  
-# FrameWork & Library(이름 -> 버전)
-# Node.js
+## FrameWork & Library(이름 -> 버전)
+### Node.js
  * Express -> 4.16.1<br>
  * bcrypt -> 5.0.1<br>
  * cookie-parser -> 1.4.4<br>
@@ -43,12 +43,12 @@
  * request -> 2.88.2<br>
  * sequelize -> 6.7.0<br>
  * sequelize-cli -> 6.2.0<br>
-# Django
+### Django
  * mysqlclient -> 2.1.0<br>
  * pandas -> 1.3.4<br><br>
  
  # 실행 이전에 주의하실 점
- # 모듈 및 라이브러리 설치
+ ## 모듈 및 라이브러리 설치
  ```
  Node.js
  npm install // 실행 시 모든 요구사항이 한번에 설치됩니다.
@@ -59,7 +59,7 @@
  pip install [패키지명] // 패키지 설치
  pip install [패키지명] [버전] // 특정 버전 패키지 설치
 ```
-# 환경 변수 설정
+## 환경 변수 설정
 - .env파일 개설 후 아래 규칙에 맞춰 파일 개설
   - MySQL_URL: MySQL Database URL
   - MySQL_ID: MySQL 계정 ID
@@ -69,7 +69,7 @@
   - SECRET: 세션 비밀 키
   - PORT: 메인 서버 실행을 요청할 포트 번호
 
-# 장고 서버 내부 데이터베이스 설정
+## 장고 서버 내부 데이터베이스 설정
 - django_server 폴더로 이동 후 아래 규칙에 따라 my_settings.py 파이썬 파일 개설
    ```py
    DATABASES = {
