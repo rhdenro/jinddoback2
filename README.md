@@ -62,6 +62,10 @@
  Django
  pip install [패키지명] // 패키지 설치
  pip install [패키지명] [버전] // 특정 버전 패키지 설치
+ React
+ 1. yarn install [패키지명]
+ 2. npm install [패키지명]
+ 1을 권장하나 오류가 발생하거나 정상 설치 불가 시 2의 방법으로 시행할것
 ```
 ## 환경 변수 설정
 - .env파일 개설 후 아래 규칙에 맞춰 파일 개설
@@ -96,7 +100,10 @@
 3. cd ../  // 메인 경로로 이동
 4. cd django_server // 장고 서버(인공지능 서버)로 이동
 5. python manage.py runserver // 장고 서버 실행
-6. localhost의 포트번호로 접속하여 APP 실행
+6. cd ../ // 메인 경로로 이동
+7. cd seats // 프론트 경로로 이동
+8. yarn start // 프론트 앱 실행
+9. localhost:3000 으로 접속 후 시스템 사용
 ```
 
 # 기타 사항
