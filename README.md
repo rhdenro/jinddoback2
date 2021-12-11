@@ -96,5 +96,5 @@
 ```
 
 # 기타 사항
-<h4>개발자 Email : kis89576@gmail.com</h4>
+<h4>개발자 Email : kis89576@gmail.com(SERVER)</h4>
 <h4> LICENSE : MIT LICENSE </h4>
