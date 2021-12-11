@@ -1,9 +1,6 @@
 import React from 'react';
 import './Kategorie.css';
 
-
-
-
 function Kategorie({ info, image }){
     const clickMe = () => {
         if (info == "전체좌석보기"){

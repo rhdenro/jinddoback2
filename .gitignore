@@ -1,5 +1,5 @@
 #remote tracking node_modules
-node_modules
+/node_modules
 
 #vscode setting disable
 .vscode

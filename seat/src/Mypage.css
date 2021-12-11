@@ -1,0 +1,18 @@
+.more {
+    display: inline-block;
+    margin-left: 100%;
+    text-align: center;
+}
+.button {
+    align-items: center;
+    justify-content: center;
+    
+}
+.infoArea{
+    text-align:center;
+    width:100%;
+    font-size: 1.3em;
+}
+.color{
+    color:red;
+}

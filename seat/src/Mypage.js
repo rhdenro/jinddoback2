@@ -114,7 +114,7 @@ function Mypage() {
        
         <br/>
         <div className="more">
-            <h2 className="infoArea"> 좌석 초기화 클릭 시 이용했던 모든 좌석에 대한 <br/> 정보는 <strong class="color">별점 2점</strong>으로 초기화됩니다.</h2>
+            <h2 className="infoArea"> 좌석 초기화 클릭 시 이용했던 모든 좌석에 대한 정보는 <strong class="color">별점 2점</strong>으로 초기화됩니다.</h2>
             <button className="button" onClick={clickMe}>
             좌석 초기화
             </button>
