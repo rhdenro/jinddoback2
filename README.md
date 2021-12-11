@@ -122,4 +122,6 @@
 # 기타 사항
 <h4>개발자 Email : kis89576@gmail.com(SERVER)</h4>
 <h4>개발자 Email : fkdleon3@naver.com(MODEL)</h4>
+<h4>개발자 Email : kmig1164@naver.com(Front-end)</h4>
 <h4> LICENSE : MIT LICENSE </h4>
+
