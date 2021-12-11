@@ -278,7 +278,7 @@ router.post('/seats/reservation_con', function(req,res,next){
 
 router.post('/seats/reservation_con', function(req,res,next){
     //시간 연장
-    pool.query('UPDATE reservation_log SET end_time = DATE_ADD(end_time, INTERVAL 30 MINUTE) WHERE available=1 AND reservation_user=?', req.body.userid, function(err,rows,fields){
+    pool.query('UPDATE reservation_log SET end_time = DATE_ADD(end_time, INTERVAL 2 HOUR) WHERE available=1 AND reservation_user=?', req.body.userid, function(err,rows,fields){
         if(err){
             res.json({result: "쿼리문 오류"});
         }
