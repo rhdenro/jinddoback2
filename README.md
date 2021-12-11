@@ -18,6 +18,12 @@
   분류기는 python3 기반으로 구성되어 있고, python pandas로 데이터 구조화 및 추천 알고리즘에 따른 구현이 이루어져 있습니다.<br/>
   MySQL에서 정보를 가져와 Content-Based-Fitering방식을 채용한 모듈입니다.<br/>
 </div>
+<br/>
+<div>
+  사용자 인터페이스는 JavaScript 라이브러리 중 하나인 React를 사용합니다.<br/>
+  상호작용이 많은 UI를 만들 때 생기는 어려움을 줄이고, Node 서버에 렌더링을 할 수 있다는 장점이 있기에 선택하였습니다.<br/>
+  대부분의 페이지 스타일링은 CSS를 사용했으며, 별점을 받아오는 부분과 추가 선택을 하는 부분은 Styled-Components 를 사용했습니다.<br/>
+</div>
 
 # Server
 
