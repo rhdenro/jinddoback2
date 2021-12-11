@@ -2,11 +2,12 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.db import connection
 import json
+import pandas as pd
+from datetime import datetime, timedelta
 
 def recommend(request):
     result = []
     try:
-        import pandas as pd
         cursor = connection.cursor()
         strSql = "SELECT * FROM seats where seat_available = 1"
         cursor.execute(strSql)
@@ -90,7 +91,7 @@ def recommend(request):
                 if edge == 1:
                     flag = df['edge_seat'] == 1
                     count=df[flag].shape[0]
-                    while count > 0 and len(result) < 15:
+                    while count > 1 and len(result) < 15:
                         temp=[]
                         temp.append(df[flag].iloc[0]['seat_code'])
                         temp.append(fdf['3NA'])
@@ -98,10 +99,17 @@ def recommend(request):
                         idx_df = df[flag].index[0]
                         df = df.drop(idx_df)
                         count -= 1
+                print('debug')
                 while (len(result) < 15):
-                    if df.empty: break
-                    result.append(df.iloc[0]['seat_code'])
-                    df = df.drop(df.index[0])
+                    if df.empty:
+                        break
+                    temp=[]
+                    temp.append(df.iloc[0]['seat_code'])
+                    temp.append(fdf['3NA'])
+                    result.append(temp)
+                    print(result)
+                    idx_df = df.index[0]
+                    df = df.drop(idx_df)
             else:
                 flag = df['pc_available'] == 0
                 df = df[flag]
@@ -122,7 +130,8 @@ def recommend(request):
                 fre_ten = 0
                 for i in test_df[flag]['density']:
                     fre_ten += i
-                fre_ten = fre_ten / test_df[flag].shape[0]
+                if not test_df[flag].shape[0] == 0:
+                    fre_ten = fre_ten / test_df[flag].shape[0]
                 if fre_ten < 50:
                     for i in df['seat_code']:
                         flag = df['seat_code'] == i
@@ -235,35 +244,56 @@ def fretend(df):
     return temp
 
 def reservation(request):
+
     try:
-        sqldata = json.loads(request.body)
-        seat_code = sqldata["seat_code"]
-        if seat_code[1] == 'P' :
-            return JsonResponse(200)
-        userid = sqldata["userid"]
-        date = sqldata["end_date"]
-        score = sqldata["score"]
-        density = sqldata["density"]
+        print('start')
         cursor = connection.cursor()
+        strSql = "SELECT * FROM seats where seat_available = 1"
+        cursor.execute(strSql)
+        seats = cursor.fetchall()
+        df = pd.DataFrame(seats,
+                          columns=['seat_available', 'pc_available', 'concent_available', 'seat_code', 'preferences',
+                                   'edge_seat'])
+        flag = df['pc_available'] !=1
+        df = df[flag]
+        fdf = fretend(df)
+        print(fdf)
+        sqldata = json.loads(request.body)
+        print(sqldata)
+        seat_code = sqldata["seatCode"]
+        print(seat_code)
+        if seat_code[1] == 'P' :
+            return JsonResponse(200,safe=False)
+        userid = sqldata["user_id"]
+        print(userid)
+        date = sqldata["end_date"]
+        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+        score = sqldata["rating"]
+        print(fdf)
+        density = fdf[seat_code[0:3]]
+        print(density)
         strSql = "SELECT * FROM preference_table where reservation_user = (%s)"
         cursor.execute(strSql, (userid,))
         connection.commit()
         temp = cursor.fetchall()
-        min_date = 0
+        print(temp)
+        temp=list(temp)
         flag_date = 0
         for i in temp:
             if i[2] == seat_code:
+                print('동일')
                 temp_count = i[3] + 1
                 strSql = 'UPDATE preference_table SET  count =(%s), score=(%s),density=(%s) WHERE reservation_user=(%s) and seat_code=(%s)'
                 cursor.execute(strSql, (temp_count, score, density, userid, seat_code,))
                 connection.commit()
                 connection.close()
-                return JsonResponse(200)
-
+                return JsonResponse(200,safe=False)
+        min_date=temp[0][4]
         for i in temp:
             if i[4] <min_date:
                 min_date=i[4]
-        if date - min_date > 21:
+        if (date - min_date).days > 21:
+            print("day")
             temp.sort(key=lambda x: x[4])
             strSql = 'DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
             cursor.execute(strSql, (userid, temp[0][2],))
@@ -272,19 +302,25 @@ def reservation(request):
             cursor.execute(strSql, (userid, seat_code, 1, date, score, density,))
             connection.commit()
             connection.close()
-            return JsonResponse(200)
+            return JsonResponse(200,safe=False)
+        print('debug')
+        print(flag_date)
         if flag_date != 1:
             min_score = 10
             for i in temp:
                 if i[5]<min_score:
                     min_score = i[5]
+            print(min_score)
             if score < min_score:
                 connection.close()
-                return JsonResponse(200)
+                return JsonResponse(200, safe=False)
             else:
+
                 temp.sort(key=lambda x: x[4])
+                print('sort')
                 for i in temp:
-                    if i[5] <= score and score == min_score:
+                    if i[5] <= score and i[5] == min_score:
+                        print('score')
                         strSql='DELETE FROM preference_table WHERE reservation_user=(%s) and seat_code=(%s)'
                         cursor.execute(strSql, (userid, i[2] ,))
                         connection.commit()
@@ -292,8 +328,9 @@ def reservation(request):
                         cursor.execute(strSql, (userid, seat_code , 1 ,date ,score ,density, ))
                         connection.commit()
                         connection.close()
-        return JsonResponse(200)
+        return JsonResponse(200, safe=False)
     except Exception as ex:
+        print("Error: ",ex)
         connection.rollback()
-        return JsonResponse(406)
+        return JsonResponse(406, safe=False)
 
