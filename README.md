@@ -13,6 +13,7 @@
   데이터베이스는 MySQL을 사용합니다.<br/>
   분류기는 Python을 기반으로 제작되었습니다.<br/>
 </div>
+<br/>
 <div>
   분류기는 python3 기반으로 구성되어 있고, python pandas로 데이터 구조화 및 추천 알고리즘에 따른 구현이 이루어져 있습니다.<br/>
   MySQL에서 정보를 가져와 Content-Based-Fitering방식을 채용한 모듈입니다.<br/>
@@ -49,8 +50,14 @@
  * sequelize-cli -> 6.2.0<br>
 ### Django
  * mysqlclient -> 2.1.0<br>
- * pandas -> 1.3.4<br><br>
- 
+ * pandas -> 1.3.4<br>
+### React
+ * dotenv -> 10.0.0<br>
+ * react -> 17.0.2<br>
+ * react-dom -> 17.0.2<br>
+ * react-router-dom ->6.0.2<br>
+ * react-scrips -> 2.1.7<br>
+ * styled-components -> 5.3.3<br>
  # 실행 이전에 주의하실 점
  ## 모듈 및 라이브러리 설치
  ```
