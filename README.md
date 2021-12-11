@@ -114,7 +114,7 @@
 4. cd django_server // 장고 서버(인공지능 서버)로 이동
 5. python manage.py runserver // 장고 서버 실행
 6. cd ../ // 메인 경로로 이동
-7. cd seats // 프론트 경로로 이동
+7. cd seat // 프론트 경로로 이동
 8. yarn start // 프론트 앱 실행
 9. localhost:3000 으로 접속 후 시스템 사용
 ```
